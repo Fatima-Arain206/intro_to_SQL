@@ -8,6 +8,12 @@ CREATE SEQUENCE  OrderLinesSequence as int
 
 	insert into OrderDetail(OrderLineID, OrderID, OrderDate, ProductID, Quantity, UnitPrice)
 values
-    (next value for OrderLinesSequence , 1,'2025-01-15',1,2,99.99),
-	(next value for OrderLinesSequence ,  1,'2025-01-15',2,1,149.99),
-   (next  value for OrderLinesSequence,  2,'2025-01-20',1,3,220.99)
+    (next value for OrderLinesSequence , 4,'2025-01-15',1,2,99.99),
+	(next value for OrderLinesSequence ,  4,'2025-01-15',2,1,149.99)
+   --(next  value for OrderLinesSequence,  5,'2025-01-20',1,3,220.99)
+
+   select * from [Order]
+
+   update [Order]
+   set OrderID =1 
+   where OrderID =4
