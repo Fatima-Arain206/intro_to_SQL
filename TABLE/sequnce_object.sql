@@ -12,7 +12,7 @@ values
 	(next value for OrderLinesSequence ,  4,'2025-01-15',2,1,149.99)
    --(next  value for OrderLinesSequence,  5,'2025-01-20',1,3,220.99)
 
-   select * from [Order]
+   select * from OrderDetail
 
    update [Order]
    set OrderID =1 
