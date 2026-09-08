@@ -1,0 +1,1 @@
+SELECT * from Sales.Customers where CustomerID = 4

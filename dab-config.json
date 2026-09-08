@@ -15,7 +15,8 @@
       "allow-introspection": true
     },
     "mcp": {
-      "enabled": false
+      "enabled": true,
+        "path": "/mcp"
     }
   },
   "autoentities": {},
