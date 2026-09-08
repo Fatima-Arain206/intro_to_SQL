@@ -6,18 +6,47 @@
   },
   "runtime": {
     "rest": {
-      "enabled": false
- 
+      "enabled": false,
+      "path": "/api",
+      "request-body-strict": true
     },
     "graphql": {
-        "enabled": false
+      "enabled": false,
+      "path": "/graphql",
+      "allow-introspection": true
     },
     "mcp": {
-        "enabled": true
+      "enabled": true
     }
-},
-    
-    "graphql": {
-      "enabled": false
+  },
+  "autoentities": {},
+  "entities": {
+    "Customers": {
+      "source": {
+        "object": "Sales.Customers",
+        "type": "table"
+      },
+      "graphql": {
+        "enabled": true,
+        "type": {
+          "singular": "Customers",
+          "plural": "Customers"
+        }
+      },
+      "rest": {
+        "enabled": true
+      },
+      "permissions": [
+        {
+          "role": "anonymous",
+          "actions": [
+            {
+              "action": "read"
+            }
+          ]
+        }
+      ],
+      "mcp": false
     }
   }
+}
