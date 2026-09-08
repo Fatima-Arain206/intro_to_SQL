@@ -27,11 +27,8 @@
         "type": "table"
       },
       "graphql": {
-        "enabled": true,
-        "type": {
-          "singular": "Customers",
-          "plural": "Customers"
-        }
+        "enabled": true
+        
       },
       "rest": {
         "enabled": true
