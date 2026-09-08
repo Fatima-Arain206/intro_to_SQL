@@ -1,5 +1,4 @@
 {
-  "$schema": "https://github.com/Azure/data-api-builder/releases/latest/download/dab.draft.schema.json",
   "data-source": {
     "database-type": "mssql",
     "connection-string": "Server=FATIMA-LAPTOP\\SQLEXPRESS;Database=salesdb;Integrated Security=True;TrustServerCertificate=True"
@@ -16,7 +15,7 @@
       "allow-introspection": true
     },
     "mcp": {
-      "enabled": true
+      "enabled": false
     }
   },
   "autoentities": {},
@@ -24,11 +23,16 @@
     "Customers": {
       "source": {
         "object": "Sales.Customers",
-        "type": "table"
+        "type": "table",
+        "parameters": [],
+        "key-fields": ["CustomerID"]
       },
       "graphql": {
-        "enabled": true
-        
+        "enabled": true,
+        "type": {
+          "singular": "Customers",
+          "plural": "Customers"
+        }
       },
       "rest": {
         "enabled": true
@@ -42,8 +46,217 @@
             }
           ]
         }
-      ],
-      "mcp": false
+      ]
+    },
+    "Location": {
+      "source": {
+        "object": "dbo.Location",
+        "type": "table"
+      },
+      "graphql": {
+        "enabled": true,
+        "type": {
+          "singular": "Location",
+          "plural": "Locations"
+        }
+      },
+      "rest": {
+        "enabled": true
+      },
+      "permissions": [
+        {
+          "role": "anonymous",
+          "actions": [
+            {
+              "action": "read"
+            }
+          ]
+        }
+      ]
+    },
+    "Person": {
+      "source": {
+        "object": "dbo.Person",
+        "type": "table"
+      },
+      "graphql": {
+        "enabled": true,
+        "type": {
+          "singular": "Person",
+          "plural": "People"
+        }
+      },
+      "rest": {
+        "enabled": true
+      },
+      "permissions": [
+        {
+          "role": "anonymous",
+          "actions": [
+            {
+              "action": "read"
+            }
+          ]
+        }
+      ]
+    },
+    "Product": {
+      "source": {
+        "object": "dbo.Product",
+        "type": "table"
+      },
+      "graphql": {
+        "enabled": true,
+        "type": {
+          "singular": "Product",
+          "plural": "Products"
+        }
+      },
+      "rest": {
+        "enabled": true
+      },
+      "permissions": [
+        {
+          "role": "anonymous",
+          "actions": [
+            {
+              "action": "read"
+            }
+          ]
+        }
+      ]
+    },
+    "Employees": {
+      "source": {
+        "object": "Sales.Employees",
+        "type": "table"
+      },
+      "graphql": {
+        "enabled": true,
+        "type": {
+          "singular": "Employees",
+          "plural": "Employees"
+        }
+      },
+      "rest": {
+        "enabled": true
+      },
+      "permissions": [
+        {
+          "role": "anonymous",
+          "actions": [
+            {
+              "action": "read"
+            }
+          ]
+        }
+      ]
+    },
+    "OrderAudit": {
+      "source": {
+        "object": "Sales.OrderAudit",
+        "type": "table",
+        "key-fields": ["AuditID"]
+      },
+      "graphql": {
+        "enabled": true,
+        "type": {
+          "singular": "OrderAudit",
+          "plural": "OrderAudits"
+        }
+      },
+      "rest": {
+        "enabled": true
+      },
+      "permissions": [
+        {
+          "role": "anonymous",
+          "actions": [
+            {
+              "action": "read"
+            }
+          ]
+        }
+      ]
+    },
+    "OrderInsertLog": {
+      "source": {
+        "object": "Sales.OrderInsertLog",
+        "type": "table",
+        "key-fields": ["LogID"]
+      },
+      "graphql": {
+        "enabled": true,
+        "type": {
+          "singular": "OrderInsertLog",
+          "plural": "OrderInsertLogs"
+        }
+      },
+      "rest": {
+        "enabled": true
+      },
+      "permissions": [
+        {
+          "role": "anonymous",
+          "actions": [
+            {
+              "action": "read"
+            }
+          ]
+        }
+      ]
+    },
+    "Orders": {
+      "source": {
+        "object": "Sales.Orders",
+        "type": "table"
+      },
+      "graphql": {
+        "enabled": true,
+        "type": {
+          "singular": "Orders",
+          "plural": "Orders"
+        }
+      },
+      "rest": {
+        "enabled": true
+      },
+      "permissions": [
+        {
+          "role": "anonymous",
+          "actions": [
+            {
+              "action": "read"
+            }
+          ]
+        }
+      ]
+    },
+    "Products": {
+      "source": {
+        "object": "Sales.Products",
+        "type": "table"
+      },
+      "graphql": {
+        "enabled": true,
+        "type": {
+          "singular": "Products",
+          "plural": "Products"
+        }
+      },
+      "rest": {
+        "enabled": true
+      },
+      "permissions": [
+        {
+          "role": "anonymous",
+          "actions": [
+            {
+              "action": "read"
+            }
+          ]
+        }
+      ]
     }
   }
 }
