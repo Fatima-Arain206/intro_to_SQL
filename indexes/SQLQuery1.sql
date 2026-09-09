@@ -1,0 +1,5 @@
+--  Non Clustered index
+-- this is calles rid id
+-- it create a page which store the data page number and the exact laocation 
+-- where id is stored
+-- the index pages are called row locater page
