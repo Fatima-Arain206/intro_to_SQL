@@ -40,7 +40,8 @@ GO
 
 IF NOT EXISTS (SELECT 1 FROM sys.certificates WHERE name = 'SensitiveDataCert')
     CREATE CERTIFICATE SensitiveDataCert
-    WITH SUBJECT = 'Certificate for sensitive data encryption';
+    WITH SUBJECT = 'Certificate for sensitive data encryption'
+END
 GO
 
 IF NOT EXISTS (SELECT 1 FROM sys.symmetric_keys WHERE name = 'SensitiveDataKey')
@@ -74,3 +75,9 @@ END;
 
 CLOSE SYMMETRIC KEY SensitiveDataKey;
 GO
+
+SELECT EmployeeID,
+       CONVERT(varchar(50), DECRYPTBYKEY(SSN)) AS SSN_Decrypted
+FROM dbo.Employees;
+GO
+rollback 

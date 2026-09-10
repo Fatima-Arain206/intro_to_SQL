@@ -9,6 +9,16 @@
 			"type": "stdio",
 			"command": "npx",
 			"args": []
+		},
+		"my-mcp-server-db17c3d0": {
+			"type": "stdio",
+			"command": "npx",
+			"args": []
+		},
+		"my-mcp-server-9f962bda": {
+			"type": "stdio",
+			"command": "npx",
+			"args": []
 		}
 	},
 	"inputs": []

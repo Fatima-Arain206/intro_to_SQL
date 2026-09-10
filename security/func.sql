@@ -1,0 +1,1 @@
+EXEC sp_set_session_context @key = N'TenantID', @value = 42;
