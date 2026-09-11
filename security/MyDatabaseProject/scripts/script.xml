@@ -1,5 +1,11 @@
 Add scripts to the project
 A project supports exactly one predeployment script and one post-deployment script. You declare them in the .sqlproj file with PreDeploy and PostDeploy item entries:
+<ItemGroup>
+    <PreDeploy Include="prep-db.sql" />
+</ItemGroup>
+<ItemGroup>
+    <PostDeploy Include="PostDeploy.sql" />
+</ItemGroup>
 
 <ItemGroup>
     <Build Remove="Scripts\PostDeployment\seed-statuses.sql" />
