@@ -36,36 +36,29 @@ GO
 
 
 -- Set the department/product value for the current session
+
+
+
+
+
+
+-- Set the department/security value for this session
 EXEC sys.sp_set_session_context
     @key = N'ProductID',
     @value = 1;
-
--- Retrieve rows allowed by the security policy
-SELECT
-    ProductID,
-    *,
-    CAST(SESSION_CONTEXT(N'ProductID') AS INT) AS SessionProductID
-FROM dbo.Products;
 GO
 
--- Test access to another ProductID
-EXEC sys.sp_set_session_context
-    @key = N'ProductID',
-    @value = 999999;
-
+-- Retrieve all columns, including ProductID
 SELECT
-    ProductID,
-    *,
-    CAST(SESSION_CONTEXT(N'ProductID') AS INT) AS SessionProductID
-FROM dbo.Products;
+    p.*,
+    CAST(SESSION_CONTEXT(N'ProductID') AS INT) AS CurrentSecurityValue
+FROM dbo.Products AS p;
 GO
 
--- Verify that the security policy is enabled
+-- Retrieve specific columns if available in dbo.Products
 SELECT
-    name AS PolicyName,
-    is_enabled
-FROM sys.security_policies
-WHERE name = N'EmployeeDepartmentPolicy';
+    p.ProductID,
+    p.Name,
+    p.ListPrice
+FROM dbo.Products AS p;
 GO
-
-
