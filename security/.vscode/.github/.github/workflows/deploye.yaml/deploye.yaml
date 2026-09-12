@@ -1,0 +1,45 @@
+# .github/workflows/sql-deploy.yml
+name: Build and Deploy SQL Project
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Build SQL project
+      run: dotnet build ./Database.sqlproj -o ./output
+
+    - name: Upload dacpac artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: dacpac
+        path: ./output/Database.dacpac
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+    - name: Download dacpac artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: dacpac
+
+    - name: Install SqlPackage
+      run: dotnet tool install -g microsoft.sqlpackage
+
+    - uses: azure/login@v2
+      with:
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+    - uses: azure/sql-action@v2.3
+      with:
+        connection-string: ${{ secrets.AZURE_SQL_CONNECTION_STRING }}
+        path: './Database.dacpac'
+        action: 'publish'
