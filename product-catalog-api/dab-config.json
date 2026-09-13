@@ -43,28 +43,77 @@
   },
   "autoentities": {},
   "entities": {
-   
-       "Category": {
-   "source": { "object": "dbo.Categories", "type": "table" },
-   "relationships": {
-     "products": {
-       "cardinality": "many",
-       "target.entity": "Product",
-       "source.fields": ["CategoryID"],
-       "target.fields": ["CategoryID"]
-     }
-   },
-   "permissions": [
-     { "role": "anonymous", "actions": ["read"] }
-   ]
- }
-
-    ,
+    "Category": {
+      "source": {
+        "object": "dbo.Categories",
+        "type": "table"
+      },
+      "graphql": {
+        "enabled": true,
+        "type": {
+          "singular": "Category",
+          "plural": "Categories"
+        }
+      },
+      "rest": {
+        "enabled": true
+      },
+      "permissions": [
+        {
+          "role": "anonymous",
+          "actions": [
+            {
+              "action": "read"
+            }
+          ]
+        }
+      ],
+      "relationships": {
+        "products": {
+          "cardinality": "many",
+          "target.entity": "Product",
+          "source.fields": [
+            "CategoryID"
+          ],
+          "target.fields": [
+            "CategoryID"
+          ]
+        }
+      }
+    },
     "Product": {
       "source": {
         "object": "dbo.Products",
         "type": "table"
       },
+      "graphql": {
+        "enabled": true,
+        "type": {
+          "singular": "Product",
+          "plural": "Products"
+        }
+      },
+      "rest": {
+        "enabled": true
+      },
+      "permissions": [
+        {
+          "role": "anonymous",
+          "actions": [
+            {
+              "action": "read"
+            }
+          ]
+        },
+        {
+          "role": "authenticated",
+          "actions": [
+            {
+              "action": "*"
+            }
+          ]
+        }
+      ],
       "mappings": {
         "ProductID": "id",
         "ProductName": "name",
@@ -83,18 +132,33 @@
             "CategoryID"
           ]
         }
+      }
+    },
+    "ProductCatalog": {
+      "source": {
+        "object": "dbo.ProductCatalogView",
+        "type": "view",
+        "key-fields": [
+          "ProductID"
+        ]
+      },
+      "graphql": {
+        "enabled": true,
+        "type": {
+          "singular": "ProductCatalog",
+          "plural": "ProductCatalogs"
+        }
+      },
+      "rest": {
+        "enabled": true
       },
       "permissions": [
         {
           "role": "anonymous",
           "actions": [
-            "read"
-          ]
-        },
-        {
-          "role": "authenticated",
-          "actions": [
-            "*"
+            {
+              "action": "read"
+            }
           ]
         }
       ]
