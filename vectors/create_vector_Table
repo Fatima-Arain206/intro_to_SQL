@@ -1,0 +1,7 @@
+CREATE TABLE dbo.Products
+(
+    ProductID INT PRIMARY KEY,
+    Name NVARCHAR(100),
+    Description NVARCHAR(MAX),
+    DescriptionVector VECTOR(1536) NOT NULL
+);
