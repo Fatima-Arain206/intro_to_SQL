@@ -32,3 +32,7 @@ SELECT
 FROM ProductsToInsert;
 
 COMMIT TRANSACTION;
+
+SELECT name, model_type
+FROM sys.external_models
+WHERE name = 'MyEmbeddingModel';
