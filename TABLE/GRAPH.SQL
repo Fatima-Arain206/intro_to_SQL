@@ -46,3 +46,14 @@ SELECT
  PERSON AS P2
  WHERE MATCH(P1 -(M)-> P2)
  ;
+---
+SELECT 
+    P1.personID,
+    P1.personName AS TOpERSON,
+    M.RelationType ,
+    P2.personName AS FROM_PERSON
+
+
+ FROM PERSON AS P1, PERSON_MANAGER AS M,
+ PERSON AS P2
+ WHERE MATCH(P1 <-(M)- P2)
