@@ -1,43 +1,32 @@
 # Pattern Matching
 
-## Pattern matching in SQL
+This folder is about searching text using SQL pattern logic.
 
-Pattern matching helps find text that follows a certain format.
+## Main tools
+- `LIKE`
+- `%` wildcard
+- `_` wildcard
+- `PATINDEX`
 
-## Main operators
-
-### LIKE
+## Example
 ```sql
-SELECT FirstName
-FROM dbo.Customer
-WHERE FirstName LIKE 'A%';
+SELECT
+    ProductName
+FROM dbo.Product
+WHERE ProductName LIKE '%Laptop%';
 ```
 
-### Contains
-```sql
-SELECT FirstName
-FROM dbo.Customer
-WHERE FirstName LIKE '%ali%';
-```
+## Why it matters
+Pattern matching is used for:
+- searching names and keywords
+- filtering classification codes
+- identifying formatting mistakes
+- handling partial text matches
 
-### Single character wildcard
-```sql
-SELECT FirstName
-FROM dbo.Customer
-WHERE FirstName LIKE 'A_';
-```
+## Practice tasks
+1. Find records with a prefix or suffix.
+2. Search for a pattern in a column.
+3. Compare `LIKE` with equality checks.
+4. Learn when to avoid pattern matching on large text columns.
 
-## Use cases
-
-- search names
-- filter emails
-- match product codes
-- clean data
-
-## Best practices
-
-- avoid leading wildcards when possible
-- use normalized values for better matching
-- index searchable columns when large data is involved
-
-This folder contains pattern matching examples and queries.
+This folder develops string-search thinking, which is essential for data cleaning and investigation.

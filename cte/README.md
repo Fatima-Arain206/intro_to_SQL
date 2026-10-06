@@ -1,82 +1,41 @@
 # CTE (Common Table Expressions)
 
-## What is a CTE?
+This folder focuses on CTEs, which make queries easier to read and break into logical steps.
 
-A CTE is a temporary table-like result that exists only inside one query.
+## What a CTE is
+A CTE is a temporary named result set used inside a query. It helps you organize complex logic without creating a permanent table.
 
-It helps you split complex SQL into small readable steps.
+## Why CTEs are useful
+- simplify multi-step queries
+- improve readability
+- support recursive queries
+- make debugging easier
 
-## Why use CTE?
-
-- easier to read
-- easier to debug
-- better for repeated logic
-- useful in advanced queries
-
-## Basic syntax
-
+## Example
 ```sql
-WITH SalesSummary AS (
-    SELECT CustomerId, COUNT(*) AS TotalOrders
-    FROM dbo.Order
-    GROUP BY CustomerId
+WITH ActiveCustomers AS (
+    SELECT
+        CustomerId,
+        FirstName,
+        LastName
+    FROM dbo.Customer
+    WHERE IsActive = 1
 )
-SELECT *
-FROM SalesSummary;
+SELECT
+    *
+FROM ActiveCustomers;
 ```
 
-## Multi-CTE example
+## Advanced use case
+CTEs are especially helpful when you write:
+- aggregated steps followed by final filtering
+- recursive hierarchical queries
+- query decomposition for readability
 
-```sql
-WITH CustomerOrders AS (
-    SELECT CustomerId, COUNT(*) AS OrderCount
-    FROM dbo.Order
-    GROUP BY CustomerId
-),
-TopCustomers AS (
-    SELECT CustomerId, OrderCount
-    FROM CustomerOrders
-    WHERE OrderCount > 2
-)
-SELECT *
-FROM TopCustomers;
-```
+## Practice tasks
+1. Create a CTE from a filtered result set.
+2. Join a CTE to another table.
+3. Write a recursive CTE for hierarchical data.
+4. Compare a CTE to a subquery.
 
-## Recursive CTE
-
-Used to generate a sequence or traverse hierarchical data.
-
-```sql
-WITH Numbers AS (
-    SELECT 1 AS N
-    UNION ALL
-    SELECT N + 1
-    FROM Numbers
-    WHERE N < 10
-)
-SELECT N
-FROM Numbers;
-```
-
-## Best practices
-
-- keep names meaningful
-- use one CTE for one purpose
-- avoid too many nested CTEs
-- use `UNION ALL` when duplicates are okay
-
-## Common mistakes
-
-- recursive CTE without stopping condition
-- too much logic in one CTE
-- forgetting query order
-
-## Real-world use
-
-CTEs are great for:
-- summary reports
-- ranking logic
-- hierarchical data
-- step-by-step query building
-
-This folder contains CTE examples for learning and practice.
+This folder is important because readable SQL is maintainable SQL.

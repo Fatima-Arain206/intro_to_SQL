@@ -1,101 +1,51 @@
 # TABLE
 
-## Tables are the heart of SQL
+This folder focuses on table design, table-level constraints, partitioning, indexing, and table operations in SQL Server.
 
-A table stores data in rows and columns. Every database table is built like a spreadsheet, but with rules and relationships.
+## What this section covers
+- creating tables
+- altering table structure
+- primary and foreign keys
+- computed columns
+- default values
+- identity/sequence objects
+- JSON columns and table JSON operations
+- partitioning and aligned indexes
+- indexing strategies for performance
 
-## Basic table example
+## Why this is important
+A table is the foundation of every database. If the table design is poor, queries become slow and logic becomes fragile.
 
+## Key SQL Server topics here
+- `CREATE TABLE` with explicit column definitions
+- `CONSTRAINT` usage for data integrity
+- `IDENTITY`, `SEQUENCE`, and default values
+- indexing patterns: clustered, nonclustered, aligned, non-aligned
+- partitioning for large data sets
+- JSON columns and functions like `JSON_VALUE`, `OPENJSON`, and `JSON_MODIFY`
+
+## Example
 ```sql
 CREATE TABLE dbo.Customer (
     CustomerId INT IDENTITY(1,1) PRIMARY KEY,
     FirstName NVARCHAR(50) NOT NULL,
     LastName NVARCHAR(50) NOT NULL,
-    Email NVARCHAR(100) NULL,
-    CreatedDate DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME()
+    Email NVARCHAR(100) NOT NULL UNIQUE,
+    CreatedAt DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME()
 );
 ```
 
-## Important concepts
-
-### Columns
-Each column has a data type and rules.
-
-```sql
-CustomerId INT,
-FirstName NVARCHAR(50),
-OrderDate DATETIME2,
-TotalAmount DECIMAL(10,2)
-```
-
-### Primary Key
-Uniquely identifies each row.
-
-```sql
-CustomerId INT PRIMARY KEY
-```
-
-### Foreign Key
-Links one table to another.
-
-```sql
-CREATE TABLE dbo.Order (
-    OrderId INT IDENTITY(1,1) PRIMARY KEY,
-    CustomerId INT NOT NULL,
-    TotalAmount DECIMAL(10,2) NOT NULL,
-    CONSTRAINT FK_Order_Customer FOREIGN KEY (CustomerId)
-        REFERENCES dbo.Customer(CustomerId)
-);
-```
-
-### Constraints
-- `PRIMARY KEY`
-- `FOREIGN KEY`
-- `UNIQUE`
-- `NOT NULL`
-- `CHECK`
-- `DEFAULT`
-
-## Common DDL commands
-
-### Create table
-```sql
-CREATE TABLE dbo.Product (
-    ProductId INT PRIMARY KEY,
-    ProductName NVARCHAR(100),
-    Price DECIMAL(10,2)
-);
-```
-
-### Alter table
-```sql
-ALTER TABLE dbo.Product
-ADD Category NVARCHAR(50);
-```
-
-### Drop table
-```sql
-DROP TABLE dbo.Product;
-```
-
-### Truncate table
-```sql
-TRUNCATE TABLE dbo.Product;
-```
-
-## Best practices
-
-- name tables clearly
-- use schema prefix like `dbo.TableName`
-- choose correct data types
-- keep table design simple
-- use keys to connect tables
+## Good habits
+- Use PascalCase for column names
+- Prefer explicit schema names: `dbo.Customer`
+- Use constraints instead of manual validation in application code
+- Add indexes only after checking query patterns
+- Use `EXISTS` for checks instead of `COUNT(*)`
 
 ## Practice tasks
+1. Create a table with PK and FK constraints.
+2. Add a unique constraint and a default value.
+3. Compare clustered vs nonclustered index behavior.
+4. Analyze a table using `sys.indexes` and `sys.objects`.
 
-1. Create a `Student` table
-2. Add a `Course` table with a foreign key
-3. Insert 3 sample rows
-4. Run a `SELECT` query to view results
-
-This folder helps you learn table design and SQL table operations.
+This folder is the core of database design and should be practiced carefully.

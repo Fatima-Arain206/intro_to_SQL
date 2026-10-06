@@ -1,42 +1,28 @@
 # Labs
 
-## SQL lab practice
+This folder acts like a practice area for SQL exercises and hands-on experiments.
 
-This folder is for practical, hands-on SQL tasks.
+## Purpose
+Labs are where you test your understanding without worrying about perfect production code. They help you do the following:
 
-## What you do in labs
+- apply a concept immediately
+- check syntax and logic
+- build confidence with repeated practice
+- debug incorrect results
 
-- create tables
-- insert data
-- write queries
-- fix bugs
-- test edge cases
+## How to use labs
+1. Read the concept theory.
+2. Open a lab file.
+3. Run the query in SQL Server.
+4. Change one part of the query.
+5. Observe how the result changes.
 
-## Example lab query
+## Study tips
+- Keep notes for every lab.
+- Write a short summary of what the query is doing.
+- Try to rewrite the same logic in a different form.
 
-```sql
-SELECT CustomerId, COUNT(*) AS TotalOrders
-FROM dbo.Order
-GROUP BY CustomerId;
-```
+## Mindset
+The goal is not just to copy code. The goal is to understand why the code behaves the way it does.
 
-## Good lab workflow
-
-1. understand the table
-2. write a simple query
-3. test the result
-4. handle edge cases
-5. optimize if needed
-
-## Best habits
-
-- start simple
-- use `SELECT` before `UPDATE` or `DELETE`
-- print intermediate results
-- validate your assumptions
-
-## Learning target
-
-The purpose of labs is not just to finish tasks. The purpose is to understand why the query works.
-
-This folder is for practice-based SQL learning.
+This folder is your practice ground for building real SQL skill.

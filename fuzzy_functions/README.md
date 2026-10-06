@@ -1,59 +1,38 @@
 # Fuzzy Functions
 
-## What are fuzzy functions?
+This folder focuses on approximate matching and flexible text searching.
 
-Fuzzy functions help when data is not exactly matched, but very similar.
+## Why fuzzy matching matters
+Real-world data often contains typos, mixed casing, partial names, and formatting issues. Fuzzy matching helps when exact equality is not enough.
 
-Examples:
-- `Ali` vs `Aly`
-- `Khan` vs `Khanh`
-- search by partial text
+## Typical use cases
+- customer name search
+- partial matching
+- approximate duplicates detection
+- searching across messy text data
 
-## Common patterns
+## Common concepts
+- case-insensitive matching
+- similarity checks
+- wildcard patterns
+- pattern matching with `LIKE`
 
-### LIKE
+## Example
 ```sql
-SELECT FirstName
+SELECT
+    CustomerId,
+    FirstName,
+    LastName
 FROM dbo.Customer
 WHERE FirstName LIKE 'A%';
 ```
 
-### Contains search
-```sql
-SELECT FirstName
-FROM dbo.Customer
-WHERE FirstName LIKE '%ali%';
-```
+## Best practice
+Fuzzy logic should be used carefully. For performance-critical queries, targeted indexes and exact matching are usually better than broad fuzzy searches.
 
-### CHARINDEX
-```sql
-SELECT FirstName, CHARINDEX('a', FirstName) AS Position
-FROM dbo.Customer;
-```
+## Practice tasks
+1. Search names with wildcards.
+2. Compare exact and approximate matching.
+3. Identify when fuzzy search is useful vs dangerous.
 
-### PATINDEX
-```sql
-SELECT Email, PATINDEX('%@%', Email) AS AtPosition
-FROM dbo.Customer;
-```
-
-## Why useful?
-
-- search boxes
-- name matching
-- messy data cleanup
-- data quality checks
-
-## Best practices
-
-- normalize values before comparing
-- use `TRIM()` / `LOWER()` when needed
-- avoid overly broad patterns
-
-## Practice
-
-1. Search names starting with `A`
-2. Search names containing `ali`
-3. Find emails with `@gmail.com`
-
-This folder contains examples for fuzzy and flexible text matching in SQL.
+This folder helps you work with imperfect data in a practical and realistic way.

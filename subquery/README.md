@@ -1,44 +1,40 @@
-# Subquery
+# Subqueries
 
-## What is a subquery?
+This folder introduces queries nested inside other queries.
 
-A subquery is a query inside another query.
+## Why subqueries matter
+A subquery lets you answer questions in stages. It helps when you need to compute something first and then use that result in an outer query.
 
-## Simple example
+## Common patterns
+- subquery in `WHERE`
+- subquery in `SELECT`
+- subquery in `FROM`
+- correlated subquery
+- nested subqueries
 
+## Example
 ```sql
-SELECT FirstName
+SELECT
+    CustomerId,
+    FirstName,
+    LastName
 FROM dbo.Customer
 WHERE CustomerId IN (
     SELECT CustomerId
-    FROM dbo.Order
+    FROM dbo.[Order]
+    WHERE TotalAmount > 500
 );
 ```
 
-## Correlated subquery
+## Benefits
+- break complex logic into smaller problems
+- work with results from nested queries
+- express filtering based on aggregated data
 
-A correlated subquery depends on the outer query.
+## Practice tasks
+1. Write a subquery to filter using aggregated sales.
+2. Use a subquery in a `SELECT` list.
+3. Compare subquery and join approaches.
+4. Understand correlated subquery behavior.
 
-```sql
-SELECT c.CustomerId, c.FirstName
-FROM dbo.Customer AS c
-WHERE EXISTS (
-    SELECT 1
-    FROM dbo.Order AS o
-    WHERE o.CustomerId = c.CustomerId
-);
-```
-
-## When to use subqueries
-
-- filter based on another query
-- compare values against aggregates
-- build nested logic
-
-## Best practices
-
-- keep subqueries readable
-- avoid unnecessary nesting
-- use `EXISTS` for existence checks
-
-This folder contains examples for learning subqueries and correlated queries.
+This is a foundational topic before moving to advanced query design.

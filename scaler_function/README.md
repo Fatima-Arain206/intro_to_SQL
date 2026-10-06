@@ -1,37 +1,39 @@
 # Scalar Functions
 
-## What are scalar functions?
+This folder covers single-row functions that transform values for each row in a query.
 
-Scalar functions return a single value based on input arguments.
+## Use cases
+- string cleaning
+- date calculations
+- number formatting
+- conditional logic
+- business rules
+
+## Typical functions
+- `CAST` / `CONVERT`
+- `ABS`, `ROUND`
+- `DATEADD`, `DATEDIFF`
+- `CASE WHEN`
 
 ## Example
-
 ```sql
-CREATE FUNCTION dbo.GetFullName (@FirstName NVARCHAR(50), @LastName NVARCHAR(50))
-RETURNS NVARCHAR(101)
-AS
-BEGIN
-    RETURN CONCAT(@FirstName, ' ', @LastName);
-END;
-```
-
-## Common usage
-
-```sql
-SELECT dbo.GetFullName(FirstName, LastName) AS FullName
+SELECT
+    CustomerId,
+    FirstName,
+    CASE
+        WHEN IsActive = 1 THEN 'Active'
+        ELSE 'Inactive'
+    END AS Status
 FROM dbo.Customer;
 ```
 
-## Why use them?
+## Learning goal
+Understand that scalar functions work row by row and are different from aggregate functions, which summarize many rows together.
 
-- reusable logic
-- cleaner queries
-- consistent formatting or calculations
+## Practice tasks
+1. Convert dates to a readable format.
+2. Use `CASE` for status flags.
+3. Compare scalar and aggregate behavior.
+4. Explain when to use functions in the `SELECT` list vs computed columns.
 
-## Best practices
-
-- keep functions deterministic when possible
-- avoid heavy logic in functions
-- test performance carefully
-
-This folder covers scalar function creation and use in SQL Server.
+This folder builds the skill of transforming raw values into business-friendly data.

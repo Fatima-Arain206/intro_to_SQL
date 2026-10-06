@@ -1,39 +1,51 @@
-# SQL Security
+# Security
 
-## Security in SQL Server
-
-This folder covers database and data protection concepts.
+This folder covers database security practices and user-safe access patterns.
 
 ## Core topics
+- permissions
+- roles and access control
+- stored procedure security patterns
+- input validation
+- avoiding unsafe SQL query construction
 
-- user permissions
-- row-level security
-- encryption
-- masking
-- auditing
-- grants and denies
+## SQL Server security rules for this repo
+- Never generate `GRANT` statements to `public`
+- Use parameterized queries, never concatenate user input
+- Avoid dynamic SQL when possible
+- Protect data access through least privilege
 
-## Example grant
+## Why security matters
+A database can be correct, fast, and still unsafe if users can inject queries or access restricted records.
 
+## Example of a safer pattern
 ```sql
-GRANT SELECT ON dbo.Customer TO UserA;
+CREATE PROCEDURE dbo.usp_GetCustomerById
+    @CustomerId INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        CustomerId,
+        FirstName,
+        LastName
+    FROM dbo.Customer
+    WHERE CustomerId = @CustomerId;
+END;
 ```
 
-## Example deny
+## Practice tasks
+1. Compare direct table access and stored procedure access.
+2. Review examples of parameterized queries.
+3. Identify security issues in unsafe SQL patterns.
+4. Understand the idea of least privilege.
 
-```sql
-DENY SELECT ON dbo.Customer TO UserB;
-```
+## Learning mindset
+Never treat security as an afterthought. Good database design includes:
+- controlled access
+- validation
+- restricted permissions
+- safe coding patterns
 
-## Why this matters
-
-Data should be protected from unauthorized access, especially in production systems.
-
-## Best practices
-
-- grant minimum permissions
-- use roles instead of direct user access when possible
-- review audits regularly
-- use encryption for sensitive data
-
-This folder contains SQL examples for learning database security concepts.
+This folder is essential for building professional database systems.

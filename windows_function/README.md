@@ -1,45 +1,41 @@
-# Windows Function
+# Windows Functions
 
-## What are window functions?
+This folder teaches ranking and analytical functions in SQL Server.
 
-Window functions perform calculations across rows related to the current row without grouping the result set.
+## What window functions do
+A window function calculates a value across a set of rows related to the current row, without collapsing the rows like `GROUP BY` does.
 
-## Common examples
+## Common functions
+- `ROW_NUMBER()`
+- `RANK()`
+- `DENSE_RANK()`
+- `NTILE()`
+- `SUM() OVER()`
+- `AVG() OVER()`
+- `LEAD()` / `LAG()`
 
-### ROW_NUMBER
+## Example
 ```sql
-SELECT CustomerId, FirstName,
-       ROW_NUMBER() OVER (ORDER BY CustomerId) AS RowNum
-FROM dbo.Customer;
+SELECT
+    CustomerId,
+    OrderDate,
+    TotalAmount,
+    ROW_NUMBER() OVER (PARTITION BY CustomerId ORDER BY OrderDate DESC) AS rn
+FROM dbo.[Order];
 ```
 
-### RANK
-```sql
-SELECT CustomerId, TotalAmount,
-       RANK() OVER (ORDER BY TotalAmount DESC) AS RankValue
-FROM dbo.Order;
-```
-
-### LAG / LEAD
-```sql
-SELECT CustomerId, OrderDate,
-       LAG(OrderDate) OVER (ORDER BY OrderDate) AS PreviousOrderDate,
-       LEAD(OrderDate) OVER (ORDER BY OrderDate) AS NextOrderDate
-FROM dbo.Order;
-```
-
-## Why they matter
-
-Window functions are used heavily in:
+## Why this matters
+Window functions are used in:
+- reporting
 - ranking
-- running totals
-- comparisons with previous/next row
-- analytics queries
+- trend analysis
+- cumulative totals
+- comparing current and previous rows
 
-## Best practices
+## Practice tasks
+1. Rank customers by total sales.
+2. Compare `ROW_NUMBER` vs `RANK`.
+3. Use `LAG`/`LEAD` to track changes over time.
+4. Calculate running totals with `SUM() OVER()`.
 
-- use `OVER (PARTITION BY ...)` for grouping within categories
-- keep logic readable
-- use them for analytical reporting, not for simple row filtering
-
-This folder contains SQL examples for window functions and analytics queries.
+This folder is essential for analytical SQL and business reporting.

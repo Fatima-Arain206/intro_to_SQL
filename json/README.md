@@ -1,61 +1,40 @@
-# JSON
+# JSON in SQL Server
 
-## What is JSON in SQL Server?
+This folder covers working with JSON data inside SQL Server tables and queries.
 
-JSON is a lightweight format used to send and store data between systems.
+## Why JSON matters
+Many systems send and receive JSON from APIs, front-end apps, and services. SQL Server can store and query JSON efficiently.
 
-SQL Server can:
-- store JSON strings
-- query JSON values
-- generate JSON output
-- parse arrays and nested objects
+## Core topics
+- JSON columns
+- `OPENJSON`
+- `JSON_VALUE`
+- `JSON_MODIFY`
+- parsing semi-structured data
 
-## Important functions
-
-### JSON_VALUE
+## Example
 ```sql
-DECLARE @json NVARCHAR(MAX) = '{"CustomerId":1,"Name":"Ali"}';
-SELECT JSON_VALUE(@json, '$.Name') AS Name;
+SELECT
+    JSON_VALUE(CustomerData, '$.name') AS CustomerName,
+    JSON_VALUE(CustomerData, '$.city') AS City
+FROM dbo.CustomerProfile;
 ```
 
-### OPENJSON
-```sql
-DECLARE @json NVARCHAR(MAX) = '{"CustomerId":1,"Name":"Ali"}';
-SELECT *
-FROM OPENJSON(@json);
-```
-
-### FOR JSON
-```sql
-SELECT CustomerId, FirstName, LastName
-FROM dbo.Customer
-FOR JSON PATH;
-```
-
-## Example JSON document
-
-```json
-{
-  "CustomerId": 1,
-  "FirstName": "Ali",
-  "Orders": [
-    { "OrderId": 101, "Total": 200 },
-    { "OrderId": 102, "Total": 300 }
-  ]
-}
-```
-
-## Why it matters
-
-- API responses
-- frontend/backend data exchange
-- semi-structured data
-- modern app integrations
+## Learning goals
+- Understand when JSON is a good fit
+- Learn how to convert JSON to relational rows
+- Learn how to update JSON values without rewriting the entire document
 
 ## Best practices
+- Use JSON when data is semi-structured
+- Use relational tables for structured, strongly typed data
+- Validate JSON before storing large payloads
+- Keep queries readable and explicit
 
-- validate JSON before use
-- keep schema simple
-- use JSON only when it is useful
+## Practice tasks
+1. Parse JSON arrays with `OPENJSON`.
+2. Extract a scalar value with `JSON_VALUE`.
+3. Update a key using `JSON_MODIFY`.
+4. Compare JSON storage to a normalized table design.
 
-This folder includes examples for working with JSON in SQL Server.
+This folder teaches how SQL Server bridges the gap between relational and document-style data.

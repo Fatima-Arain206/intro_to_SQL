@@ -1,57 +1,52 @@
-# Procedure
+# Stored Procedures
 
-## SQL stored procedures
+This folder focuses on reusable SQL logic encapsulated in procedures.
 
-A stored procedure is a reusable SQL block that can accept parameters and return results.
+## What a stored procedure is
+A stored procedure is a named block of T-SQL that can accept input parameters, execute logic, and return result sets.
 
-## Why use procedures?
+## Why procedures are useful
+- centralize business logic
+- improve maintainability
+- reduce duplicate SQL over many applications
+- control permissions and access patterns
+- support transaction-safe operations
 
-- reusable logic
-- cleaner code
-- easier maintenance
-- central business rules
+## Naming convention in this repo
+- `usp_ActionEntity` such as `usp_GetCustomerOrders`
 
-## Basic syntax
-
+## Example
 ```sql
-CREATE PROCEDURE dbo.GetCustomerById
+CREATE PROCEDURE dbo.usp_GetCustomerOrders
     @CustomerId INT
 AS
 BEGIN
-    SELECT CustomerId, FirstName, LastName
-    FROM dbo.Customer
-    WHERE CustomerId = @CustomerId;
+    SET NOCOUNT ON;
+
+    BEGIN TRY
+        SELECT
+            o.OrderId,
+            o.OrderDate,
+            o.TotalAmount
+        FROM dbo.[Order] AS o
+        WHERE o.CustomerId = @CustomerId;
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH
 END;
 ```
 
-## With output parameter
+## Important SQL Server practices
+- Use `SET NOCOUNT ON`
+- Wrap data changes in `TRY...CATCH`
+- Use parameterized input
+- Return explicit results, not generic messages only
 
-```sql
-CREATE PROCEDURE dbo.GetCustomerCount
-    @Total INT OUTPUT
-AS
-BEGIN
-    SELECT @Total = COUNT(*)
-    FROM dbo.Customer;
-END;
-```
+## Practice tasks
+1. Create a procedure to fetch one customer.
+2. Create a procedure to insert a new order with validation.
+3. Add `TRY...CATCH` and inspect error handling.
+4. Compare procedure logic with inline SQL.
 
-## Error handling
-
-```sql
-BEGIN TRY
-    SELECT 1 / 0;
-END TRY
-BEGIN CATCH
-    SELECT ERROR_MESSAGE() AS ErrorMessage;
-END CATCH;
-```
-
-## Best practices
-
-- use clear procedure names
-- pass parameters explicitly
-- keep SQL readable
-- handle errors properly
-
-This folder covers procedure creation, parameters, and error handling in SQL Server.
+This folder helps you move from writing one-off scripts to building reusable database logic.
