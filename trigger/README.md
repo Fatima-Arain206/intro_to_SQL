@@ -1,47 +1,72 @@
-# Triggers
+# Triggers (Event-driven Data Rules)
 
-This folder covers database triggers, which fire automatically in response to data changes.
+## Overview
+Triggers automatically execute on table/view DML events.
 
-## What triggers are
-Triggers execute after or instead of DML events such as `INSERT`, `UPDATE`, or `DELETE`.
+## Folder SQL map
+| SQL file | Practice focus |
+|---|---|
+| `Log_table.sql` | Log table |
+| `auditTable.sql` | auditTable |
+| `conct.sql` | conct |
+| `dml_trigger.sql` | dml trigger |
+| `dml_trigger_verify.sql` | dml trigger verify |
+| `history_table.sql` | history table |
+| `instaed_of.sql` | instaed of |
+| `labTask_view.sql` | labTask view |
+| `proceudere_labTask.sql` | proceudere labTask |
+| `scaller.sql` | scaller |
+| `tiggerLAb.sql` | tiggerLAb |
+| `trigger_onLogTAble.sql` | trigger onLogTAble |
+| `trigger_verify.sql` | trigger verify |
+| `triggier_after_insert.sql` | triggier after insert |
+| `tvf_function.sql` | tvf function |
+| `update_after_trigger.sql` | update after trigger |
 
-## Common use cases
-- auditing changes
-- enforcing business rules
-- maintaining summary tables
-- automatically updating related records
-
-## Example
+## Example audit trigger
 ```sql
-CREATE TRIGGER dbo.trg_OrderAudit
+CREATE TRIGGER dbo.trg_Order_Audit
 ON dbo.[Order]
-AFTER INSERT, UPDATE
+AFTER UPDATE
 AS
 BEGIN
     SET NOCOUNT ON;
 
-    INSERT INTO dbo.OrderAuditLog (OrderId, ActionType, AuditDate)
-    SELECT i.OrderId, 'INSERT_OR_UPDATE', SYSUTCDATETIME()
-    FROM inserted AS i;
+    INSERT INTO dbo.OrderAudit (
+        OrderId,
+        OldTotalAmount,
+        NewTotalAmount,
+        ChangedAt
+    )
+    SELECT
+        d.OrderId,
+        d.TotalAmount,
+        i.TotalAmount,
+        SYSUTCDATETIME()
+    FROM inserted AS i
+    INNER JOIN deleted AS d
+        ON d.OrderId = i.OrderId;
 END;
 ```
+Line-by-line:
+1. Trigger fires after updates on `dbo.[Order]`.
+2. `inserted`/`deleted` pseudo-tables hold new/old row versions.
+3. Join by PK maps before/after values.
+4. Insert writes audit history with UTC timestamp.
 
-## Important caution
-Triggers are powerful but can cause hidden side effects. They should be used carefully because they can:
-- reduce performance
-- create unexpected update chains
-- make debugging harder
+Expected result: each updated order produces one audit row.
 
-## Best practices
-- Keep trigger logic simple
-- Prefer application-level checks when possible
-- Avoid long-running processing in triggers
-- Use `inserted` and `deleted` tables carefully
+## Cautions
+- Triggers run per statement, not per row.
+- Avoid business logic that belongs in application/procedure layer.
 
-## Practice tasks
-1. Create a trigger that logs changes.
-2. Understand the difference between `inserted` and `deleted`.
-3. Test update and delete operations.
-4. Explain when triggers are a good vs bad choice.
+## Performance & debugging
+- Keep trigger body minimal and set-based.
+- Inspect recursion/nesting settings when side effects chain.
 
-This folder helps you understand event-driven SQL logic and database auditing.
+## DSA connection
+Trigger pipelines resemble event-driven systems with downstream processing edges.
+
+## Exercises
+1. Add delete-audit trigger with actor identity.
+2. Write INSTEAD OF trigger for controlled soft-delete.

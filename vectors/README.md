@@ -1,30 +1,43 @@
-# Vectors
+# Vectors in SQL Workflows
 
-This folder introduces vector-related database concepts, which are becoming important in AI and similarity search workflows.
+## Overview
+This folder introduces vector-like storage/search ideas for AI-assisted retrieval.
 
-## Why vectors matter
-A vector represents a set of numeric values used to model meaning, similarity, and patterns in high-dimensional spaces.
+## Folder SQL map
+| SQL file | Practice focus |
+|---|---|
+| `NCCI.sql` | NCCI |
+| `in_memory.sql` | in memory |
+| `insert.sql` | insert |
+| `temporal.sql` | temporal |
+| `vecotor_distance.sql` | vecotor distance |
+| `vector_index.sql` | vector index |
 
-## Common uses
-- semantic search
-- recommendation systems
-- AI-powered similarity search
-- retrieval-augmented generation (RAG)
+## Conceptual example (schema may vary by SQL Server version)
+> **Self-contained conceptual demo**: adapt datatype/functions to your SQL Server build.
 
-## SQL Server relation
-SQL Server provides support for modern AI-related workflows, including vector features and similarity use cases. This folder introduces the idea that SQL is no longer only about rows and tables; it can also support advanced AI patterns.
-
-## Example idea
 ```sql
--- Conceptual example only
-SELECT TOP 10 *
-FROM dbo.Documents
-ORDER BY VECTOR_DISTANCE(Embedding, @QueryVector) ASC;
+SELECT
+    d.DocumentId,
+    d.Title,
+    d.EmbeddingText
+FROM dbo.DocumentEmbedding AS d
+WHERE d.Topic = 'sql-server';
 ```
+Line-by-line:
+1. Query retrieves candidate documents and metadata.
+2. Vector similarity step is implementation-dependent (engine/version).
 
-## Practice tasks
-1. Understand how embeddings differ from traditional keys.
-2. Learn why similarity search is not the same as exact SQL matching.
-3. Explore how SQL can support AI-driven retrieval workflows.
+Expected result: candidate rows ready for similarity ranking stage.
 
-This folder is part of the future-facing side of database learning.
+## Practical guidance
+- Keep embeddings versioned.
+- Store source text chunk ids for traceability.
+- Rebuild vectors when model changes.
+
+## DSA connection
+Vector retrieval is nearest-neighbor search in high-dimensional space.
+
+## Exercises
+1. Design schema for chunk + embedding + source reference.
+2. Add a fallback keyword filter before vector ranking.

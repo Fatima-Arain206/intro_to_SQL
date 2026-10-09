@@ -1,40 +1,51 @@
-# Subqueries
+# Subqueries (Nested Query Logic)
 
-This folder introduces queries nested inside other queries.
+## Overview
+Subqueries let you solve a problem in layers: inner query computes a set/value, outer query consumes it.
 
-## Why subqueries matter
-A subquery lets you answer questions in stages. It helps when you need to compute something first and then use that result in an outer query.
+## Folder SQL map
+| SQL file | Practice focus |
+|---|---|
+| `SQLQuery4.sql` | SQLQuery4 |
+| `SQLQuery6.sql` | SQLQuery6 |
+| `correlated_subquery.sql` | correlated subquery |
+| `error_h.sql` | error h |
+| `subquury.sql` | subquury |
 
-## Common patterns
-- subquery in `WHERE`
-- subquery in `SELECT`
-- subquery in `FROM`
-- correlated subquery
-- nested subqueries
-
-## Example
+## Example: filter by aggregate from subquery
 ```sql
 SELECT
-    CustomerId,
-    FirstName,
-    LastName
-FROM dbo.Customer
-WHERE CustomerId IN (
-    SELECT CustomerId
-    FROM dbo.[Order]
-    WHERE TotalAmount > 500
+    c.CustomerId,
+    c.FirstName,
+    c.LastName
+FROM dbo.Customer AS c
+WHERE c.CustomerId IN (
+    SELECT
+        o.CustomerId
+    FROM dbo.[Order] AS o
+    GROUP BY o.CustomerId
+    HAVING SUM(o.TotalAmount) > 50000
 );
 ```
+Line-by-line:
+1. Outer query returns customer identity columns.
+2. `IN` compares outer `CustomerId` with inner result set.
+3. Inner query groups orders per customer.
+4. `HAVING` keeps customers above spending threshold.
 
-## Benefits
-- break complex logic into smaller problems
-- work with results from nested queries
-- express filtering based on aggregated data
+Expected result: high-value customers only.
 
-## Practice tasks
-1. Write a subquery to filter using aggregated sales.
-2. Use a subquery in a `SELECT` list.
-3. Compare subquery and join approaches.
-4. Understand correlated subquery behavior.
+## Common mistakes
+- Using `=` when inner query returns multiple rows.
+- Correlated subquery without supporting index.
 
-This is a foundational topic before moving to advanced query design.
+## Best practices
+- Prefer `EXISTS` for existence checks.
+- Rewrite deeply nested patterns into CTE for readability.
+
+## DSA connection
+Think of subqueries as composable functions: output set from one step becomes input set for next step.
+
+## Exercises
+1. Rewrite the above with `EXISTS`.
+2. Build correlated subquery returning latest order date per customer.

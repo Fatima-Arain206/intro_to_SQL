@@ -1,40 +1,44 @@
-# String Functions
+# String Functions (Data Cleaning Toolkit)
 
-This folder covers string manipulation in SQL Server, which is essential for cleaning, transforming, and validating textual data.
+## Overview
+This folder practices text normalization and parsing operations.
 
-## Topics covered
-- `CONCAT`
-- `REPLACE`
-- `TRIM`
-- `SUBSTRING`
-- `LEN`
-- `LOWER`, `UPPER`
-- `LEFT`, `RIGHT`
-- `CHARINDEX`, `PATINDEX`
+## Folder SQL map
+| SQL file | Practice focus |
+|---|---|
+| `REPLACE.sql` | REPLACE |
+| `SQLQuery2.sql` | SQLQuery2 |
+| `TRIM.sql` | TRIM |
+| `concat.sql` | concat |
 
-## Why string functions matter
-In real-world datasets, names, addresses, products, and codes often contain inconsistent formatting. SQL string functions help you standardize data.
-
-## Example
+## Self-contained demo
 ```sql
 SELECT
-    CONCAT(FirstName, ' ', LastName) AS FullName,
-    TRIM(Email) AS CleanEmail,
-    REPLACE(PhoneNumber, '-', '') AS CleanPhone
-FROM dbo.Customer;
+    c.CustomerId,
+    TRIM(c.FullName) AS CleanName,
+    UPPER(c.CountryCode) AS CountryCodeUpper,
+    REPLACE(c.PhoneNumber, '-', '') AS PhoneDigits
+FROM dbo.Customer AS c;
 ```
+Line-by-line:
+1. `TRIM` removes leading/trailing spaces.
+2. `UPPER` standardizes case for comparisons.
+3. `REPLACE` strips punctuation from phone values.
+4. Explicit columns keep output predictable.
 
-## Best practices
-- Trim user input before storing or comparing it
-- Normalize case consistently
-- Be careful with `NULL` values
-- Use functions only when necessary; index-friendly patterns are better for large datasets
+Expected result: cleaner values for matching and analytics.
 
-## Practice tasks
-1. Remove leading/trailing spaces.
-2. Replace unwanted characters.
-3. Extract first names from full names.
-4. Build full names using `CONCAT`.
+## Common mistakes
+- Assuming text comparison is case-sensitive in every collation.
+- Using `%pattern%` search on large tables without strategy.
 
-## DSA learning connection
-String manipulation is related to pattern matching and text processing. It strengthens your understanding of indexing, substring logic, and algorithmic efficiency in data operations.
+## Performance notes
+- Avoid wrapping indexed predicates in functions when possible.
+- For search-heavy workloads, consider full-text indexing.
+
+## DSA connection
+Tokenization and normalization resemble preprocessing in search pipelines.
+
+## Exercises
+1. Parse email domain using `CHARINDEX` and `SUBSTRING`.
+2. Identify duplicate customers after normalization.

@@ -1,41 +1,54 @@
-# Windows Functions
+# Window Functions (Analytics Without Collapsing Rows)
 
-This folder teaches ranking and analytical functions in SQL Server.
+## Overview
+Window functions compute analytics per row while preserving row-level detail.
 
-## What window functions do
-A window function calculates a value across a set of rows related to the current row, without collapsing the rows like `GROUP BY` does.
-
-## Common functions
-- `ROW_NUMBER()`
-- `RANK()`
-- `DENSE_RANK()`
-- `NTILE()`
-- `SUM() OVER()`
-- `AVG() OVER()`
-- `LEAD()` / `LAG()`
+## Folder SQL map
+| SQL file | Practice focus |
+|---|---|
+| `SQLQuery10.sql` | SQLQuery10 |
+| `cte_windowes.sql` | cte windowes |
+| `dense_rank.sql` | dense rank |
+| `first_last_value.sql` | first last value |
+| `json_rute.sql` | json rute |
+| `lag_lead.sql` | lag lead |
+| `ntle.sql` | ntle |
+| `partiionbyorderby.sql` | partiionbyorderby |
+| `partition_andGrp.sql` | partition andGrp |
+| `proceeding_row.sql` | proceeding row |
+| `rank.sql` | rank |
+| `row_num.sql` | row num |
+| `window_agg_fun.sql` | window agg fun |
 
 ## Example
 ```sql
 SELECT
-    CustomerId,
-    OrderDate,
-    TotalAmount,
-    ROW_NUMBER() OVER (PARTITION BY CustomerId ORDER BY OrderDate DESC) AS rn
-FROM dbo.[Order];
+    o.OrderId,
+    o.CustomerId,
+    o.OrderDate,
+    o.TotalAmount,
+    ROW_NUMBER() OVER (PARTITION BY o.CustomerId ORDER BY o.OrderDate DESC) AS RecencyRank,
+    SUM(o.TotalAmount) OVER (PARTITION BY o.CustomerId) AS CustomerLifetimeAmount
+FROM dbo.[Order] AS o;
 ```
+Line-by-line:
+1. Base columns keep raw transaction detail.
+2. `ROW_NUMBER` ranks each customer's orders newest->oldest.
+3. `SUM ... OVER` adds per-customer total beside each row.
 
-## Why this matters
-Window functions are used in:
-- reporting
-- ranking
-- trend analysis
-- cumulative totals
-- comparing current and previous rows
+Expected result: each order row enriched with rank + lifetime metric.
 
-## Practice tasks
-1. Rank customers by total sales.
-2. Compare `ROW_NUMBER` vs `RANK`.
-3. Use `LAG`/`LEAD` to track changes over time.
-4. Calculate running totals with `SUM() OVER()`.
+## Mistakes
+- Missing `ORDER BY` in ranking windows.
+- Large window spills due to memory grant pressure.
 
-This folder is essential for analytical SQL and business reporting.
+## Performance & maintenance
+- Index by partition/order keys (`CustomerId`, `OrderDate`).
+- Reuse window definitions when possible for readability.
+
+## DSA connection
+Window ordering uses sorting concepts; ranking complexity depends on sort/worktable behavior.
+
+## Exercises
+1. Compute 3-order moving average per customer.
+2. Return latest order only using `ROW_NUMBER() = 1`.

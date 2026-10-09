@@ -1,45 +1,53 @@
-# SET Operations
+# Set Operations (`UNION`, `UNION ALL`, `INTERSECT`, `EXCEPT`)
 
-This folder teaches how to combine result sets using SQL set logic.
+## Overview
+Set operators combine compatible result sets without explicit joins.
 
-## Core topics
-- `UNION`
-- `UNION ALL`
-- `INTERSECT`
-- `EXCEPT` / `MINUS`-style logic in SQL Server (where applicable)
-
-## Why set operations matter
-Set operations help compare or combine queries without joining tables. They are useful when you want to:
-
-- merge similar result sets
-- find common rows
-- find rows in one query but not another
-- compare data snapshots
-
-## Important rules
-- The number and order of columns must match
-- Data types must be compatible
-- `UNION` removes duplicates, while `UNION ALL` keeps duplicates
-- Use `ORDER BY` at the end of the final query
+## Folder SQL map
+| SQL file | Practice focus |
+|---|---|
+| `SQLQuery3.sql` | SQLQuery3 |
+| `UNION_ALL.sql` | UNION ALL |
+| `intersect.sql` | intersect |
+| `order_of_qury.sql` | order of qury |
+| `rule5.sql` | rule5 |
+| `set_intro.sql` | set intro |
+| `union.sql` | union |
+| `union1.sql` | union1 |
+| `union_rule.sql` | union rule |
 
 ## Example
 ```sql
-SELECT CustomerId, FirstName
-FROM dbo.Customer
-UNION ALL
-SELECT CustomerId, FirstName
-FROM dbo.CustomerArchive;
+SELECT
+    c.CustomerId,
+    c.EmailAddress
+FROM dbo.Customer AS c
+UNION
+SELECT
+    l.CustomerId,
+    l.EmailAddress
+FROM dbo.Lead AS l;
 ```
+Line-by-line:
+1. First query returns customer contacts.
+2. Second query returns lead contacts with same column order/types.
+3. `UNION` removes duplicates (distinct behavior).
 
-## Practice ideas
-1. Compare `UNION` and `UNION ALL` output.
-2. Use `INTERSECT` to find shared records.
-3. Find records present in one table but not another.
-4. Explain result ordering and duplicate handling.
+Expected result: unified unique contact list.
 
-## Learning tip
-Set operations are conceptually different from joins:
-- joins combine columns from different tables
-- set operations combine rows from similar queries
+## When to use what
+- `UNION`: combine + deduplicate.
+- `UNION ALL`: combine and keep duplicates (faster).
+- `INTERSECT`: common rows.
+- `EXCEPT`: rows in first set not present in second.
 
-This folder builds logical thinking about row comparison and data merging.
+## Pitfalls
+- Datatype mismatch across branches.
+- Hidden sort/hash cost from duplicate removal in `UNION`.
+
+## DSA connection
+Set operators map to mathematical set operations and hash/sort dedup strategies.
+
+## Exercises
+1. Compare execution plans of `UNION` vs `UNION ALL`.
+2. Use `EXCEPT` to detect missing product codes between environments.
