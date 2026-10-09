@@ -1,39 +1,55 @@
-# Scalar Functions
+# Scalar Function (scaler_function) — Value-by-Value Logic
 
-This folder covers single-row functions that transform values for each row in a query.
+## Purpose
+Scalar UDFs return one value per invocation, useful for reusable transformation rules.
 
-## Use cases
-- string cleaning
-- date calculations
-- number formatting
-- conditional logic
-- business rules
-
-## Typical functions
-- `CAST` / `CONVERT`
-- `ABS`, `ROUND`
-- `DATEADD`, `DATEDIFF`
-- `CASE WHEN`
+## Prerequisites/objectives
+- Understand expression logic and determinism.
+- Learn scalar UDF trade-offs vs inline expressions.
 
 ## Example
 ```sql
+CREATE OR ALTER FUNCTION dbo.ufn_NormalizePhone
+(
+    @RawPhone NVARCHAR(50)
+)
+RETURNS NVARCHAR(50)
+AS
+BEGIN
+    DECLARE @CleanPhone NVARCHAR(50);
+
+    SET @CleanPhone = REPLACE(REPLACE(REPLACE(@RawPhone, N'-', N''), N' ', N''), N'(', N'');
+    SET @CleanPhone = REPLACE(@CleanPhone, N')', N'');
+
+    RETURN @CleanPhone;
+END;
+```
+Line-by-line:
+- Input parameter holds raw text.
+- Nested `REPLACE` strips punctuation.
+- Function returns normalized value.
+
+## Usage query
+```sql
 SELECT
-    CustomerId,
-    FirstName,
-    CASE
-        WHEN IsActive = 1 THEN 'Active'
-        ELSE 'Inactive'
-    END AS Status
-FROM dbo.Customer;
+    c.CustomerID,
+    dbo.ufn_NormalizePhone(c.PhoneNumber) AS CleanPhone
+FROM dbo.Customer AS c;
 ```
 
-## Learning goal
-Understand that scalar functions work row by row and are different from aggregate functions, which summarize many rows together.
+## NULL/edge/performance
+- If input is NULL, replacements return NULL.
+- Scalar UDFs can hurt performance row-by-row on large sets (depending on inlining support).
 
-## Practice tasks
-1. Convert dates to a readable format.
-2. Use `CASE` for status flags.
-3. Compare scalar and aggregate behavior.
-4. Explain when to use functions in the `SELECT` list vs computed columns.
+## Security/maintainability
+- Keep UDF deterministic where possible.
+- Avoid side effects; UDF should be pure transformation.
 
-This folder builds the skill of transforming raw values into business-friendly data.
+## Exercises
+1. Build UDF for email normalization.
+2. Compare UDF vs inline expression performance.
+3. Add computed column using UDF and evaluate indexing impact.
+
+## Navigation
+Previous: [PDFs](../PDFs/README.md)  
+Next: [string functions](../string_functions/README.md)

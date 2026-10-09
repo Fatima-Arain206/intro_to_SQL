@@ -1,52 +1,132 @@
-# JOINs
+# Joins — Matching Rows Across Tables
 
-This folder is dedicated to learning how data is combined across tables in SQL Server.
+## Table of Contents
+- [Purpose and fit](#purpose-and-fit)
+- [Prerequisites and objectives](#prerequisites-and-objectives)
+- [Mental model](#mental-model)
+- [Demo schema](#demo-schema)
+- [Progressive examples with explanation](#progressive-examples-with-explanation)
+- [Business use case](#business-use-case)
+- [NULL/edge cases/concurrency](#nulledge-casesconcurrency)
+- [Performance and indexing](#performance-and-indexing)
+- [Security and maintainability](#security-and-maintainability)
+- [Common errors and debugging](#common-errors-and-debugging)
+- [Exercises](#exercises)
+- [Navigation](#navigation)
 
-## Why joins matter
-Real databases store related information in different tables. A join lets you combine those tables meaningfully so you can answer real business questions like:
+## Purpose and fit
+Joins combine normalized data into usable result sets. SQL Server optimizer chooses join algorithms (nested loops/hash/merge) based on stats and indexes.
 
-- Which customer placed this order?
-- Which product belongs to this category?
-- Which employees have no assigned manager?
+## Prerequisites and objectives
+Prerequisites: PK/FK, WHERE, ORDER BY.  
+Objectives: choose correct join type and predict row shape.
 
-## Core join types
-- INNER JOIN: only matching rows from both tables
-- LEFT JOIN: all rows from the left table, matches from the right when available
-- RIGHT JOIN: all rows from the right table
-- FULL OUTER JOIN: both sides, including unmatched rows
-- CROSS JOIN: every row from one table combines with every row from the other
-- SELF JOIN: a table joined to itself
-- ANTI JOIN / FULL ANTI JOIN: rows that do not match in a useful way
+## Mental model
+Join is a **matching/search problem**.
 
-## SQL Server conventions
-- Always use ANSI JOIN syntax
-- Prefer explicit column names and schema prefixes
-- Use `ON` conditions to define relationship logic
-- Validate whether the join is one-to-one, one-to-many, or many-to-many
-
-## Example
-```sql
-SELECT
-    c.CustomerId,
-    c.FirstName,
-    o.OrderId,
-    o.OrderDate
-FROM dbo.Customer AS c
-INNER JOIN dbo.[Order] AS o
-    ON c.CustomerId = o.CustomerId;
+```mermaid
+flowchart LR
+  A[Left rows] --> C{Match key?}
+  B[Right rows] --> C
+  C -->|yes| D[Combined row]
+  C -->|no + LEFT JOIN| E[Left row + NULL right columns]
 ```
 
-## What to practice
-1. Compare INNER vs LEFT JOIN output.
-2. Check unmatched records using `IS NULL`.
-3. Write multiple-table joins step by step.
-4. Understand duplicate rows caused by many-to-many relationships.
+## Demo schema
+```sql
+CREATE TABLE dbo.Department
+(
+    DepartmentID INT NOT NULL,
+    DepartmentName NVARCHAR(100) NOT NULL,
+    CONSTRAINT PK_Department PRIMARY KEY (DepartmentID)
+);
 
-## Learning tip
-When you see a join question, first identify:
-- Which table is the main table?
-- Which table provides the extra details?
-- What is the matching column?
-- Are you expected to keep unmatched rows?
+CREATE TABLE dbo.Employee
+(
+    EmployeeID INT NOT NULL,
+    DepartmentID INT NULL,
+    FullName NVARCHAR(120) NOT NULL,
+    Salary DECIMAL(12,2) NOT NULL,
+    CONSTRAINT PK_Employee PRIMARY KEY (EmployeeID),
+    CONSTRAINT FK_Employee_Department FOREIGN KEY (DepartmentID) REFERENCES dbo.Department(DepartmentID)
+);
+```
 
-This is one of the most important SQL topics because almost every real-world report uses joins.
+## Progressive examples with explanation
+### 1) INNER JOIN
+```sql
+SELECT
+    e.EmployeeID,
+    e.FullName,
+    d.DepartmentName
+FROM dbo.Employee AS e
+INNER JOIN dbo.Department AS d
+    ON d.DepartmentID = e.DepartmentID;
+```
+- `INNER JOIN` keeps only matched rows.
+- `ON` must contain full key match logic.
+
+### 2) LEFT JOIN for missing relations
+```sql
+SELECT
+    e.EmployeeID,
+    e.FullName,
+    d.DepartmentName
+FROM dbo.Employee AS e
+LEFT JOIN dbo.Department AS d
+    ON d.DepartmentID = e.DepartmentID;
+```
+Expected interpretation:
+- Employee without department still appears.
+- `DepartmentName` becomes NULL.
+
+### 3) Aggregation after join
+```sql
+SELECT
+    d.DepartmentName,
+    COUNT(e.EmployeeID) AS EmployeeCount
+FROM dbo.Department AS d
+LEFT JOIN dbo.Employee AS e
+    ON e.DepartmentID = d.DepartmentID
+GROUP BY
+    d.DepartmentName;
+```
+- `COUNT(e.EmployeeID)` ignores NULL employee IDs.
+- Good for zero-count departments.
+
+## Business use case
+HR dashboard combining employee roster with department metadata.
+
+## NULL/edge cases/concurrency
+- Join key NULL never equals NULL in standard equality join.
+- Duplicate keys create multiplicative rows (many-to-many explosion).
+- Under read committed, concurrent updates can change join results between statements.
+
+## Performance and indexing
+- Add index on foreign key side:
+```sql
+CREATE INDEX IX_Employee_DepartmentID ON dbo.Employee(DepartmentID);
+```
+- Missing indexes often force hash join + big memory grants.
+
+## Security and maintainability
+- Expose joins via views/procedures for stable contract.
+- Avoid dynamic SQL join fragments from user input.
+
+## Common errors and debugging
+Debug checklist:
+1. Row count too high? check duplicate join keys.
+2. Missing rows? verify INNER vs LEFT join choice.
+3. Wrong matches? validate data type compatibility and collation.
+
+## Exercises
+1. Beginner: list employees with/without department.
+2. Intermediate: highest salary per department.
+3. Advanced: detect duplicate department assignments by employee history table.
+
+DSA connection: joins resemble **hash map lookup** (hash join) or **sorted merge** (merge join).
+
+## Navigation
+Previous: [TABLE](../TABLE/README.md)  
+Next: [subquery](../subquery/README.md)  
+Related: [JOins companion](../JOins/README.md), [indexes](../indexes/README.md)

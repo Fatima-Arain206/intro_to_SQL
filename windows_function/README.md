@@ -1,41 +1,104 @@
-# Windows Functions
+# Window Functions — Analytics Without Collapsing Rows
 
-This folder teaches ranking and analytical functions in SQL Server.
+## Purpose
+Window functions compute running/relative metrics while preserving row granularity.
 
-## What window functions do
-A window function calculates a value across a set of rows related to the current row, without collapsing the rows like `GROUP BY` does.
+## Prerequisites/objectives
+- Understand GROUP BY and ordering.
+- Learn `ROW_NUMBER`, `RANK`, `SUM() OVER`, `LAG/LEAD`.
 
-## Common functions
-- `ROW_NUMBER()`
-- `RANK()`
-- `DENSE_RANK()`
-- `NTILE()`
-- `SUM() OVER()`
-- `AVG() OVER()`
-- `LEAD()` / `LAG()`
-
-## Example
-```sql
-SELECT
-    CustomerId,
-    OrderDate,
-    TotalAmount,
-    ROW_NUMBER() OVER (PARTITION BY CustomerId ORDER BY OrderDate DESC) AS rn
-FROM dbo.[Order];
+## Mental model
+```mermaid
+flowchart LR
+  A[Partition rows] --> B[Order rows inside partition]
+  B --> C[Apply window calculation]
+  C --> D[Return each original row + analytic value]
 ```
 
-## Why this matters
-Window functions are used in:
-- reporting
-- ranking
-- trend analysis
-- cumulative totals
-- comparing current and previous rows
+## Demo schema
+```sql
+CREATE TABLE dbo.SalesFact
+(
+    SalesFactID INT NOT NULL,
+    SalesRepID INT NOT NULL,
+    SaleDate DATE NOT NULL,
+    Amount DECIMAL(12,2) NOT NULL,
+    CONSTRAINT PK_SalesFact PRIMARY KEY (SalesFactID)
+);
+```
 
-## Practice tasks
-1. Rank customers by total sales.
-2. Compare `ROW_NUMBER` vs `RANK`.
-3. Use `LAG`/`LEAD` to track changes over time.
-4. Calculate running totals with `SUM() OVER()`.
+## Progressive examples
+### Ranking per sales rep
+```sql
+SELECT
+    sf.SalesRepID,
+    sf.SaleDate,
+    sf.Amount,
+    ROW_NUMBER() OVER
+    (
+        PARTITION BY sf.SalesRepID
+        ORDER BY sf.SaleDate DESC, sf.SalesFactID DESC
+    ) AS RowNumPerRep
+FROM dbo.SalesFact AS sf;
+```
+- `PARTITION BY` resets numbering per rep.
+- Deterministic tie-break uses `SalesFactID`.
 
-This folder is essential for analytical SQL and business reporting.
+### Running total
+```sql
+SELECT
+    sf.SalesRepID,
+    sf.SaleDate,
+    sf.Amount,
+    SUM(sf.Amount) OVER
+    (
+        PARTITION BY sf.SalesRepID
+        ORDER BY sf.SaleDate, sf.SalesFactID
+        ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+    ) AS RunningAmount
+FROM dbo.SalesFact AS sf;
+```
+Expected result: cumulative amount grows row-by-row per rep.
+
+### Change from previous sale
+```sql
+SELECT
+    sf.SalesRepID,
+    sf.SaleDate,
+    sf.Amount,
+    sf.Amount - LAG(sf.Amount, 1, 0) OVER
+    (
+        PARTITION BY sf.SalesRepID
+        ORDER BY sf.SaleDate, sf.SalesFactID
+    ) AS DeltaFromPrevious
+FROM dbo.SalesFact AS sf;
+```
+
+## Business use case
+Sales leaderboard, trend tracking, and anomaly detection in one pass.
+
+## NULL/edge/concurrency
+- `LAG` default handles partition-start rows.
+- Non-deterministic ORDER BY causes unstable rankings.
+
+## Performance
+- Window sorts are expensive; support with `(SalesRepID, SaleDate)` index.
+- Watch memory grant spills in execution plan.
+
+## Security/maintainability
+Encapsulate analytics in views/procedures to keep BI logic consistent.
+
+## Debugging hints
+- Wrong rank? verify partition and order columns.
+- Running total resets unexpectedly? wrong partition key.
+
+## Exercises
+1. Beginner: top 3 sales per rep.
+2. Intermediate: month-over-month percent change.
+3. Advanced: combine window + CTE for cohort retention.
+
+DSA link: window functions behave like ordered scans with rolling state.
+
+## Navigation
+Previous: [indexes](../indexes/README.md)  
+Next: [view](../view/README.md)

@@ -1,36 +1,91 @@
-# 📚 Intro to SQL - PDF Learning Modules
+# intro_to_SQL — Deep Learning Manual
 
-Welcome to the **PDF Resources** section of the `intro_to_SQL` repository! Here you will find a curated, step-by-step collection of comprehensive notes, cheat sheets, and practical guides designed to take you from SQL fundamentals to advanced database optimization and AI integration.
+This repository is now a **topic-by-topic SQL Server learning manual**.  
+Har folder ka README usi folder ke actual topic ko deep, visual, and practical tareeqe se explain karta hai.
 
----
+## Table of Contents
+- [How to use this repository](#how-to-use-this-repository)
+- [Prerequisites](#prerequisites)
+- [Learning objectives](#learning-objectives)
+- [Learning path](#learning-path)
+- [Conventions used in all examples](#conventions-used-in-all-examples)
+- [Next step](#next-step)
 
-## 🗂️ Module Overview
+## How to use this repository
+1. Start from foundational topics (`TABLE`, `Joins`, `subquery`).
+2. Move to intermediate (`cte`, `sets`, `string_functions`, `indexes`).
+3. Then advanced (`windows_function`, `trigger`, `security`, `json`, `vectors`).
+4. In each guide:
+   - Read the mental model
+   - Run demo schema
+   - Execute examples in order
+   - Do debugging checklist + exercises
 
-| # | File Name | Description & Key Topics |
-|---|---|---|
-| 01 | **[01_SQL_Introduction.pdf](01_SQL_Introduction.pdf)** | Database Basics, RDBMS Architecture, SQL vs NoSQL, Basic Concepts. |
-| 02 | **[02_Query_Data_SELECT.pdf](02_Query_Data_SELECT.pdf)** | `SELECT` statement syntax, Aliases, Column Operations, Basic Queries. |
-| 03 | **[03_Data_Definition_DDL.pdf](03_Data_Definition_DDL.pdf)** | Schema management: `CREATE`, `ALTER`, `DROP`, `TRUNCATE`, Constraints (PK, FK, Unique). |
-| 04 | **[04_Data_Manipulation_DML.pdf](04_Data_Manipulation_DML.pdf)** | Data management: `INSERT`, `UPDATE`, `DELETE`, Transactional control basics. |
-| 05 | **[05_Filtering_Data.pdf](05_Filtering_Data.pdf)** | Advanced filtering using `WHERE`, `LIKE`, `IN`, `BETWEEN`, `AND/OR/NOT`, handling `NULL`s. |
-| 06 | **[06_JOINS_and_SET.pdf](06_JOINS_and_SET.pdf)** | Relational Data Linking: `INNER`, `LEFT`, `RIGHT`, `FULL`, `CROSS JOIN`, plus `UNION`, `INTERSECT`. |
-| 07 | **[07_Row_Level_Functions.pdf](07_Row_Level_Functions.pdf)** | Scalar functions: String manipulation, Date/Time formatting, Math functions, `CASE WHEN`. |
-| 08 | **[08_Aggregation_Analytical_Functions.pdf](08_Aggregation_Analytical_Functions.pdf)** | Grouping with `GROUP BY` & `HAVING`, Window Functions (`ROW_NUMBER`, `RANK`, `LEAD/LAG`). |
-| 09 | **[09_Advanced_SQL_Techniques.pdf](09_Advanced_SQL_Techniques.pdf)** | Subqueries, CTEs (Common Table Expressions), Recursive Queries, Views & Indexes. |
-| 10 | **[10_Performance_Optimization.pdf](10_Performance_Optimization.pdf)** | Execution Plans, Index Tuning, Query Refactoring, Bottleneck Removal. |
-| -- | **[10_SQL_30_Performance_Tips.pdf](10_SQL_30_Performance_Tips.pdf)** | Quick-reference cheat sheet with 30 actionable tips for faster SQL queries. |
-| 11 | **[11_AI_and_SQL.pdf](11_AI_and_SQL.pdf)** | Integrating LLMs with Databases, Text-to-SQL workflows, AI-driven Query Optimization. |
-| 12 | **[12_SQL_Projects.pdf](12_SQL_Projects.pdf)** | End-to-end practical SQL implementation projects and problem sets. |
-| -- | **[12_SQL_Projects_Data_Analytics.pdf](12_SQL_Projects_Data_Analytics.pdf)** | Real-world Business Intelligence (BI) and Data Analytics case studies. |
-| -- | **[12_SQL_Projects_ETL.pdf](12_SQL_Projects_ETL.pdf)** | Building Data Pipelines, Data Transformation, and Staging workflows. |
+## Prerequisites
+- SQL Server basics (database, table, PK/FK).
+- SSMS or Azure Data Studio.
+- Ability to run T-SQL batches.
 
----
+## Learning objectives
+After completing all guides, you should be able to:
+- Design safe and readable T-SQL.
+- Choose joins/subqueries/CTEs/window functions correctly.
+- Understand query-plan and index impact.
+- Handle NULL, transactions, and concurrency risks.
+- Write maintainable SQL artifacts (views/procedures/triggers).
 
-## 💻 How to Use These Guides
+## Learning path
+```mermaid
+flowchart TD
+    A[TABLE] --> B[Joins]
+    B --> C[subquery]
+    C --> D[cte]
+    D --> E[sets]
+    E --> F[string & pattern functions]
+    F --> G[indexes]
+    G --> H[windows_function]
+    H --> I[view]
+    I --> J[procedure]
+    J --> K[trigger]
+    K --> L[security]
+    L --> M[json & vectors]
+```
 
-1. **Sequential Learning:** If you are new to SQL, start from `01_SQL_Introduction.pdf` and follow the numerical order.
-2. **Project-Based Practice:** Jump straight to module `12` to test your skills on realistic Analytics and ETL scenarios.
-3. **Quick Optimization Reference:** Keep `10_SQL_30_Performance_Tips.pdf` handy when writing production-level queries.
+## Topic map
+| Folder | Focus |
+|---|---|
+| [`TABLE`](./TABLE/README.md) | table design, constraints, normalization |
+| [`Joins`](./Joins/README.md) | inner/outer/cross joins + matching model |
+| [`JOins`](./JOins/README.md) | legacy companion, anti/semi join focus |
+| [`subquery`](./subquery/README.md) | scalar/correlated/EXISTS patterns |
+| [`cte`](./cte/README.md) | modular query blocks + recursion |
+| [`sets`](./sets/README.md) | UNION/INTERSECT/EXCEPT semantics |
+| [`windows_function`](./windows_function/README.md) | analytics over ordered partitions |
+| [`indexes`](./indexes/README.md) | B-tree mental model + access paths |
+| [`view`](./view/README.md) | abstraction, reuse, and security boundaries |
+| [`procedure`](./procedure/README.md) | parameterized, transactional server logic |
+| [`trigger`](./trigger/README.md) | rowset-aware change reactions |
+| [`string_functions`](./string_functions/README.md) | cleansing and parsing text |
+| [`fuzzy_functions`](./fuzzy_functions/README.md) | tolerant matching strategies |
+| [`patern match`](./patern%20match/README.md) | LIKE/PATINDEX/search patterns |
+| [`json`](./json/README.md) | JSON read/write in SQL Server |
+| [`vectors`](./vectors/README.md) | embeddings/vector similarity primer |
+| [`security`](./security/README.md) | roles, least privilege, hardening |
+| [`scaler_function`](./scaler_function/README.md) | scalar UDF behavior and pitfalls |
+| [`check.sql`](./check.sql/README.md) | query validation and guardrails |
+| [`DSA`](./DSA/README.md) | SQL + data-structure connections |
+| [`labs`](./labs/README.md) | hands-on practice path |
+| [`node`](./node/README.md) | app integration using parameterized queries |
+| [`product-catalog-api`](./product-catalog-api/README.md) | API-facing SQL patterns |
+| [`PDFs`](./PDFs/README.md) | supplementary static material |
 
----
-*Happy Querying! 🚀*
+## Conventions used in all examples
+- Explicit column lists (no `SELECT *`).
+- `dbo.` schema prefix.
+- ANSI JOIN syntax.
+- `SET NOCOUNT ON` in procedures.
+- `TRY...CATCH` for data-modification workflows.
+- Parameterized patterns (`sp_executesql` params or proc params), no unsafe concatenation.
+
+## Next step
+Start with **[TABLE guide](./TABLE/README.md)**, then continue to **[Joins](./Joins/README.md)**.

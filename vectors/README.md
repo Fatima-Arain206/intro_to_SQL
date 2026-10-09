@@ -1,30 +1,70 @@
-# Vectors
+# Vectors — Embeddings and Similarity Concepts in SQL Workflows
 
-This folder introduces vector-related database concepts, which are becoming important in AI and similarity search workflows.
+## Purpose
+Vector search supports semantic matching (meaning-based, not exact keyword-based).
 
-## Why vectors matter
-A vector represents a set of numeric values used to model meaning, similarity, and patterns in high-dimensional spaces.
+## Prerequisites/objectives
+- Understand cosine/dot-product conceptually.
+- Know when to keep vector compute in DB vs external service.
 
-## Common uses
-- semantic search
-- recommendation systems
-- AI-powered similarity search
-- retrieval-augmented generation (RAG)
-
-## SQL Server relation
-SQL Server provides support for modern AI-related workflows, including vector features and similarity use cases. This folder introduces the idea that SQL is no longer only about rows and tables; it can also support advanced AI patterns.
-
-## Example idea
-```sql
--- Conceptual example only
-SELECT TOP 10 *
-FROM dbo.Documents
-ORDER BY VECTOR_DISTANCE(Embedding, @QueryVector) ASC;
+## Mental model
+```mermaid
+flowchart LR
+  A[Text/Product] --> B[Embedding model]
+  B --> C[Vector]
+  C --> D[Similarity search]
+  D --> E[Ranked candidates]
 ```
 
-## Practice tasks
-1. Understand how embeddings differ from traditional keys.
-2. Learn why similarity search is not the same as exact SQL matching.
-3. Explore how SQL can support AI-driven retrieval workflows.
+## Practical SQL-friendly pattern
+Even if raw vector ops are external, SQL stores metadata and candidate sets.
 
-This folder is part of the future-facing side of database learning.
+```sql
+CREATE TABLE dbo.ProductEmbedding
+(
+    ProductID INT NOT NULL,
+    EmbeddingVersion NVARCHAR(50) NOT NULL,
+    VectorPayload NVARCHAR(MAX) NOT NULL,
+    UpdatedAt DATETIME2(0) NOT NULL,
+    CONSTRAINT PK_ProductEmbedding PRIMARY KEY (ProductID, EmbeddingVersion)
+);
+```
+
+### Candidate retrieval query
+```sql
+SELECT
+    pe.ProductID,
+    pe.EmbeddingVersion,
+    pe.UpdatedAt
+FROM dbo.ProductEmbedding AS pe
+WHERE pe.EmbeddingVersion = N'v1'
+ORDER BY
+    pe.UpdatedAt DESC;
+```
+Interpretation: relational pre-filter before similarity scoring step.
+
+## Business use case
+Semantic product recommendations in catalog/search systems.
+
+## NULL/edge/performance
+- Version drift causes stale comparisons; track embedding version.
+- Vector payload size can be large; separate hot metadata columns.
+
+## Security/maintainability
+- Treat embeddings as potentially sensitive derived data.
+- Keep model/version lineage auditable.
+
+## Debugging hints
+- Poor search quality? verify same embedding model for query + corpus.
+- Latency spikes? move heavy similarity compute to specialized engine.
+
+## Exercises
+1. Beginner: store/query embedding metadata.
+2. Intermediate: add job table for async re-embedding.
+3. Advanced: hybrid search combining lexical SQL filter + semantic rerank.
+
+DSA link: nearest-neighbor search uses geometric indexing structures.
+
+## Navigation
+Previous: [json](../json/README.md)  
+Next: [DSA](../DSA/README.md)
