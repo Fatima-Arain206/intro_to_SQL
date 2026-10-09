@@ -1,40 +1,90 @@
-# String Functions
+# String Functions — Clean and Transform Text Data
 
-This folder covers string manipulation in SQL Server, which is essential for cleaning, transforming, and validating textual data.
+## Purpose
+Text cleanup is essential for search, deduplication, reporting, and integrations.
 
-## Topics covered
-- `CONCAT`
-- `REPLACE`
-- `TRIM`
-- `SUBSTRING`
-- `LEN`
-- `LOWER`, `UPPER`
-- `LEFT`, `RIGHT`
-- `CHARINDEX`, `PATINDEX`
+## Prerequisites/objectives
+- Basic SELECT/UPDATE knowledge.
+- Learn `LEN`, `LTRIM/RTRIM/TRIM`, `SUBSTRING`, `REPLACE`, `CHARINDEX`.
 
-## Why string functions matter
-In real-world datasets, names, addresses, products, and codes often contain inconsistent formatting. SQL string functions help you standardize data.
+## Mental model
+Think of strings as arrays of characters with 1-based indexing in SQL Server functions.
 
-## Example
+## Demo table
 ```sql
-SELECT
-    CONCAT(FirstName, ' ', LastName) AS FullName,
-    TRIM(Email) AS CleanEmail,
-    REPLACE(PhoneNumber, '-', '') AS CleanPhone
-FROM dbo.Customer;
+CREATE TABLE dbo.CustomerText
+(
+    CustomerID INT NOT NULL,
+    RawName NVARCHAR(200) NOT NULL,
+    RawEmail NVARCHAR(255) NULL,
+    CONSTRAINT PK_CustomerText PRIMARY KEY (CustomerID)
+);
 ```
 
-## Best practices
-- Trim user input before storing or comparing it
-- Normalize case consistently
-- Be careful with `NULL` values
-- Use functions only when necessary; index-friendly patterns are better for large datasets
+## Examples
+### Normalize name and domain extraction
+```sql
+SELECT
+    ct.CustomerID,
+    TRIM(ct.RawName) AS CleanName,
+    LOWER(ct.RawEmail) AS NormalizedEmail,
+    SUBSTRING(
+        ct.RawEmail,
+        CHARINDEX(N'@', ct.RawEmail) + 1,
+        LEN(ct.RawEmail)
+    ) AS EmailDomain
+FROM dbo.CustomerText AS ct;
+```
+Line-by-line:
+- `TRIM` removes leading/trailing spaces.
+- `LOWER` standardizes case for comparisons.
+- `CHARINDEX` locates `@`.
+- `SUBSTRING` extracts domain portion.
 
-## Practice tasks
-1. Remove leading/trailing spaces.
-2. Replace unwanted characters.
-3. Extract first names from full names.
-4. Build full names using `CONCAT`.
+Expected output: cleaned name, normalized email, domain.
 
-## DSA learning connection
-String manipulation is related to pattern matching and text processing. It strengthens your understanding of indexing, substring logic, and algorithmic efficiency in data operations.
+### Safe update in procedure style
+```sql
+CREATE OR ALTER PROCEDURE dbo.usp_NormalizeCustomerText
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    BEGIN TRY
+        UPDATE dbo.CustomerText
+        SET
+            RawName = TRIM(RawName),
+            RawEmail = LOWER(RawEmail);
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH
+END;
+```
+
+## NULL/edge cases
+- `LOWER(NULL)` returns NULL.
+- Missing `@` yields `CHARINDEX = 0`; handle with CASE when needed.
+
+## Performance
+- Expressions on columns can disable index seeks.
+- Consider computed persisted columns for searchable normalized values.
+
+## Security/maintainability
+- Validate text length and format before dynamic usage.
+- Prefer deterministic cleanup rules documented in one place.
+
+## Debugging
+- Wrong domain extraction? inspect rows without `@`.
+- Truncation risk? compare destination column lengths.
+
+## Exercises
+1. Beginner: remove double spaces from names.
+2. Intermediate: derive first/last name split.
+3. Advanced: build reusable normalization view and compare plan.
+
+DSA link: string normalization is similar to preprocessing before hash-key matching.
+
+## Navigation
+Previous: [sets](../sets/README.md)  
+Next: [pattern match](../patern%20match/README.md)

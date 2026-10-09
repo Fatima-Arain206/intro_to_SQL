@@ -1,28 +1,38 @@
-# Labs
-
-This folder acts like a practice area for SQL exercises and hands-on experiments.
+# Labs — Structured Practice Path
 
 ## Purpose
-Labs are where you test your understanding without worrying about perfect production code. They help you do the following:
+Labs convert concepts into hands-on skill with increasing difficulty.
 
-- apply a concept immediately
-- check syntax and logic
-- build confidence with repeated practice
-- debug incorrect results
+## Prerequisites/objectives
+Complete guides for TABLE, Joins, subquery, CTE, and indexes first.
 
-## How to use labs
-1. Read the concept theory.
-2. Open a lab file.
-3. Run the query in SQL Server.
-4. Change one part of the query.
-5. Observe how the result changes.
+## Lab progression
+```mermaid
+flowchart LR
+  A[Lab 1: Integrity checks] --> B[Lab 2: Reporting joins]
+  B --> C[Lab 3: Analytics windows]
+  C --> D[Lab 4: Security hardening]
+```
 
-## Study tips
-- Keep notes for every lab.
-- Write a short summary of what the query is doing.
-- Try to rewrite the same logic in a different form.
+## Suggested lab set
+1. **Data integrity lab:** create schema + constraints, then intentionally break/repair.
+2. **Join diagnostics lab:** debug row multiplication and missing rows.
+3. **Performance lab:** compare plans before/after index creation.
+4. **Procedure + transaction lab:** implement safe order placement procedure.
+5. **Security lab:** role-based read access and procedure-only writes.
 
-## Mindset
-The goal is not just to copy code. The goal is to understand why the code behaves the way it does.
+## Evaluation rubric
+- correctness of result,
+- NULL/edge-case handling,
+- plan awareness,
+- maintainability/readability.
 
-This folder is your practice ground for building real SQL skill.
+## Debugging workflow for labs
+1. Reproduce issue with minimal query.
+2. Validate assumptions on intermediate rowsets.
+3. Check execution plan and cardinality.
+4. Patch and rerun tests.
+
+## Navigation
+Previous: [DSA](../DSA/README.md)  
+Next: [Labs MCP guidance](./createandmaintain_objects/mcp/.github/copilot-instructions.md)

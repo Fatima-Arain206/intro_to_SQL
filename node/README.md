@@ -1,34 +1,56 @@
-# Node / SQL Integration
+# Node Integration — Calling SQL Server Safely from Node.js
 
-This folder is for connecting SQL Server to JavaScript or Node-based tooling.
+## Purpose
+This guide explains SQL integration patterns relevant for Node-based apps in this repository context.
 
-## Why this matters
-SQL is often used together with application code. Node.js is a common way to build services that query, insert, and transform database data.
+## Core principles
+- Use parameterized queries only.
+- Keep transaction boundaries explicit.
+- Handle SQL errors with clear mapping.
 
-## Common tasks here
-- create database connections
-- execute queries from Node.js
-- read result sets in application code
-- build simple data APIs or scripts
-
-## Example idea
-```javascript
-const sql = require('mssql');
-
-async function getCustomers() {
-  const pool = await sql.connect('Server=localhost;Database=DemoDb;Trusted_Connection=True;');
-  const result = await pool.request().query('SELECT CustomerId, FirstName FROM dbo.Customer;');
-  console.log(result.recordset);
-}
+## Flow
+```mermaid
+sequenceDiagram
+  participant API as Node API
+  participant DB as SQL Server
+  API->>DB: parameterized command
+  DB-->>API: result/error
+  API-->>Client: normalized response
 ```
 
-## Data engineering principle
-The database should be the source of truth. Application code should request, validate, and present data, not hide logic in unsafe or inconsistent ways.
+## Example (conceptual T-SQL endpoint contract)
+```sql
+CREATE OR ALTER PROCEDURE dbo.usp_GetCustomerOrders
+    @CustomerID INT
+AS
+BEGIN
+    SET NOCOUNT ON;
 
-## Practice tasks
-1. Connect to SQL Server from Node.
-2. Fetch rows and print them in a console.
-3. Insert a new record using parameterized input.
-4. Build a small script that reads from a table.
+    SELECT
+        o.OrderID,
+        o.OrderDate,
+        o.TotalAmount
+    FROM dbo.[Order] AS o
+    WHERE o.CustomerID = @CustomerID
+    ORDER BY
+        o.OrderDate DESC;
+END;
+```
 
-This folder expands your SQL learning into real-world application integration.
+Why app-facing procedures help:
+- stable contract,
+- permission hardening,
+- easier plan tuning.
+
+## Edge cases
+- NULL parameter should be validated before query call.
+- Retry only transient failures (timeouts/deadlocks), not logical errors.
+
+## Exercises
+1. Implement pagination params.
+2. Add transaction for create-order + order-items.
+3. Add structured error code mapping.
+
+## Navigation
+Previous: [labs](../labs/README.md)  
+Next: [product-catalog-api](../product-catalog-api/README.md)

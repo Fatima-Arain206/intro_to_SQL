@@ -1,49 +1,27 @@
-# PDFs & Learning Path
-
-This folder stores the course PDF files for the SQL learning roadmap.
+# PDFs Folder — Supplementary Material Guide
 
 ## Purpose
-The PDFs are the theory and concept base for the repository. They cover SQL from beginner to advanced topics, including:
+This folder stores supplementary PDF learning artifacts. This README explains how to use them with the SQL topic guides.
 
-- database fundamentals
-- basic SELECT queries
-- DDL/DML concepts
-- filtering and sorting
-- joins and set logic
-- scalar and aggregate functions
-- advanced SQL techniques
-- performance tuning
-- AI + SQL integration
+## How to use PDFs effectively
+1. Read topic README first for mental model.
+2. Use PDF for extra examples/visuals.
+3. Return to SQL scripts/labs and implement from memory.
 
-## Suggested learning order
-1. 01_SQL_Introduction.pdf
-2. 02_Query_Data_SELECT.pdf
-3. 03_Data_Definition_DDL.pdf
-4. 04_Data_Manipulation_DML.pdf
-5. 05_Filtering_Data.pdf
-6. 06_JOINS_and_SET.pdf
-7. 07_Row_Level_Functions.pdf
-8. 08_Aggregation_Analytical_Functions.pdf
-9. 09_Advanced_SQL_Techniques.pdf
-10. 10_Performance_Optimization.pdf
-11. 11_AI_and_SQL.pdf
-12. 12_SQL_Projects.pdf
+## Suggested study loop
+```mermaid
+flowchart LR
+  A[Topic README] --> B[PDF deep dive]
+  B --> C[Hands-on SQL practice]
+  C --> D[Self-debug + reflection]
+```
 
-## Why PDFs still matter
-Even in modern SQL work, theory helps you understand:
-- query intent
-- table design
-- data normalization
-- execution plans
-- optimization decisions
+## Quality checklist for any added PDF notes
+- Topic alignment with folder name.
+- Contains runnable SQL snippets with `dbo.` qualification.
+- Mentions expected outputs and edge cases.
+- Includes at least one debugging checklist.
 
-## Study method
-- Read the topic once without writing code.
-- Recreate the examples in SQL Server.
-- Change the query slightly and observe the result.
-- Note which concept is connected to a real scenario.
-
-## Best practice for projects
-When you finish each PDF, open the matching folder or SQL file in this repo and practice the same concept with data examples.
-
-This folder is not just for reading; it is your map for becoming a strong SQL learner.
+## Navigation
+Previous: [product-catalog-api](../product-catalog-api/README.md)  
+Next: [PDFs legacy readme](./readme.md)

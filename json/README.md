@@ -1,40 +1,74 @@
-# JSON in SQL Server
+# JSON in SQL Server — Parse, Transform, Emit
 
-This folder covers working with JSON data inside SQL Server tables and queries.
+## Purpose
+JSON support enables hybrid relational + semi-structured workflows.
 
-## Why JSON matters
-Many systems send and receive JSON from APIs, front-end apps, and services. SQL Server can store and query JSON efficiently.
+## Prerequisites/objectives
+- Understand NVARCHAR storage.
+- Learn `JSON_VALUE`, `JSON_QUERY`, `OPENJSON`, `FOR JSON`.
 
-## Core topics
-- JSON columns
-- `OPENJSON`
-- `JSON_VALUE`
-- `JSON_MODIFY`
-- parsing semi-structured data
-
-## Example
-```sql
-SELECT
-    JSON_VALUE(CustomerData, '$.name') AS CustomerName,
-    JSON_VALUE(CustomerData, '$.city') AS City
-FROM dbo.CustomerProfile;
+## Mental model
+```mermaid
+flowchart TD
+  A[JSON payload] --> B[OPENJSON parse]
+  B --> C[Relational rows]
+  C --> D[Relational joins/business logic]
+  D --> E[FOR JSON output]
 ```
 
-## Learning goals
-- Understand when JSON is a good fit
-- Learn how to convert JSON to relational rows
-- Learn how to update JSON values without rewriting the entire document
+## Demo example
+```sql
+DECLARE @Payload NVARCHAR(MAX) = N'{
+  "OrderID": 101,
+  "CustomerID": 7,
+  "Items": [
+    { "Sku": "A1", "Qty": 2 },
+    { "Sku": "B9", "Qty": 1 }
+  ]
+}';
 
-## Best practices
-- Use JSON when data is semi-structured
-- Use relational tables for structured, strongly typed data
-- Validate JSON before storing large payloads
-- Keep queries readable and explicit
+SELECT
+    JSON_VALUE(@Payload, '$.OrderID') AS OrderID,
+    JSON_VALUE(@Payload, '$.CustomerID') AS CustomerID;
+```
+- `JSON_VALUE` extracts scalar value.
 
-## Practice tasks
-1. Parse JSON arrays with `OPENJSON`.
-2. Extract a scalar value with `JSON_VALUE`.
-3. Update a key using `JSON_MODIFY`.
-4. Compare JSON storage to a normalized table design.
+```sql
+SELECT
+    j.[Sku],
+    j.[Qty]
+FROM OPENJSON(@Payload, '$.Items')
+WITH
+(
+    [Sku] NVARCHAR(20) '$.Sku',
+    [Qty] INT '$.Qty'
+) AS j;
+```
+- `OPENJSON ... WITH` shapes array into typed rows.
 
-This folder teaches how SQL Server bridges the gap between relational and document-style data.
+## Expected output
+Two item rows: `(A1,2)` and `(B9,1)`.
+
+## NULL/edge/performance
+- Missing path returns NULL.
+- Invalid JSON throws parsing errors.
+- Use computed columns with indexes for heavily queried JSON properties.
+
+## Security/maintainability
+- Validate payload schema before writes.
+- Avoid storing sensitive secrets inside ungoverned JSON blobs.
+
+## Debugging
+- `ISJSON(@Payload)` for quick validity check.
+- Compare path casing and nesting when NULL appears unexpectedly.
+
+## Exercises
+1. Beginner: extract nested customer city.
+2. Intermediate: insert OPENJSON rows into normalized table.
+3. Advanced: build API response with nested `FOR JSON PATH`.
+
+DSA link: JSON parse resembles tree traversal where path expressions navigate nodes.
+
+## Navigation
+Previous: [check.sql](../check.sql/README.md)  
+Next: [vectors](../vectors/README.md)

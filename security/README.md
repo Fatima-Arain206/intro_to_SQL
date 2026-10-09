@@ -1,51 +1,72 @@
-# Security
+# Security — Least Privilege and Safe Querying in SQL Server
 
-This folder covers database security practices and user-safe access patterns.
+## Purpose
+Security controls who can read/modify data and how safely query logic executes.
 
-## Core topics
-- permissions
-- roles and access control
-- stored procedure security patterns
-- input validation
-- avoiding unsafe SQL query construction
+## Prerequisites/objectives
+- Understand logins/users/roles.
+- Apply least privilege and parameterized patterns.
 
-## SQL Server security rules for this repo
-- Never generate `GRANT` statements to `public`
-- Use parameterized queries, never concatenate user input
-- Avoid dynamic SQL when possible
-- Protect data access through least privilege
-
-## Why security matters
-A database can be correct, fast, and still unsafe if users can inject queries or access restricted records.
-
-## Example of a safer pattern
-```sql
-CREATE PROCEDURE dbo.usp_GetCustomerById
-    @CustomerId INT
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    SELECT
-        CustomerId,
-        FirstName,
-        LastName
-    FROM dbo.Customer
-    WHERE CustomerId = @CustomerId;
-END;
+## Mental model
+```mermaid
+flowchart LR
+  A[Login] --> B[Database User]
+  B --> C[Role Membership]
+  C --> D[Object Permissions]
 ```
 
-## Practice tasks
-1. Compare direct table access and stored procedure access.
-2. Review examples of parameterized queries.
-3. Identify security issues in unsafe SQL patterns.
-4. Understand the idea of least privilege.
+## Core principles for this repository
+- No permissive `GRANT` to `public`.
+- Use procedures/views for controlled exposure.
+- Avoid dynamic SQL unless unavoidable.
 
-## Learning mindset
-Never treat security as an afterthought. Good database design includes:
-- controlled access
-- validation
-- restricted permissions
-- safe coding patterns
+## Example: role-based access
+```sql
+CREATE ROLE SalesReader;
+GO
 
-This folder is essential for building professional database systems.
+GRANT SELECT ON dbo.Customer TO SalesReader;
+GRANT SELECT ON dbo.[Order] TO SalesReader;
+```
+Line-by-line:
+- Role groups permissions for maintainability.
+- Explicit object grants prevent accidental broad access.
+
+## Example: parameterized dynamic SQL (safe pattern)
+```sql
+DECLARE @SqlText NVARCHAR(MAX) = N'
+SELECT
+    c.CustomerID,
+    c.CustomerName
+FROM dbo.Customer AS c
+WHERE c.CustomerName LIKE @NamePattern;';
+
+EXEC sp_executesql
+    @SqlText,
+    N'@NamePattern NVARCHAR(120)',
+    @NamePattern = N'A%';
+```
+
+## NULL/edge cases
+- Permission denied may appear as empty result in app layer if errors are swallowed.
+- Ownership chaining can permit access indirectly—review object owners.
+
+## Performance and maintainability
+- Security predicates (RLS) can affect plans.
+- Keep permission scripts versioned and auditable.
+
+## Debugging method
+1. `EXECUTE AS USER = '...'` to reproduce.
+2. Check role membership and effective permissions.
+3. Validate application connection principal.
+
+## Exercises
+1. Beginner: create read-only role for reports.
+2. Intermediate: deny direct table access but allow proc execution.
+3. Advanced: model row-level access strategy.
+
+DSA link: access control resembles guard conditions before state mutation/read.
+
+## Navigation
+Previous: [trigger](../trigger/README.md)  
+Next: [security project](./MyDatabaseProject/README.md)
