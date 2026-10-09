@@ -1,37 +1,45 @@
-# Indexes
+# Indexes (Performance Engineering Basics)
 
-This folder is about database performance and access optimization.
+## Overview
+Indexes reduce lookup cost and improve join/sort/filter performance when designed well.
 
-## What indexes do
-Indexes help SQL Server quickly find rows without scanning the entire table.
-
-## Common index types
-- clustered index
-- nonclustered index
-- unique index
-- filtered index
-- composite index
-
-## Why indexes matter
-Without indexes, queries may need full table scans. This is slower on large datasets and impacts real workload performance.
+## Folder SQL map
+| SQL file | Practice focus |
+|---|---|
+| `SQLQuer.sql` | SQLQuer |
+| `SQLQuery1.sql` | SQLQuery1 |
+| `compositeIndex.sql` | compositeIndex |
+| `createIndex.sql` | createIndex |
+| `dropIndex.sql` | dropIndex |
+| `heap_table.sql` | heap table |
+| `nonclustred.sql` | nonclustred |
+| `tables.sql` | tables |
+| `useOf Index.sql` | useOf Index |
 
 ## Example
 ```sql
-CREATE NONCLUSTERED INDEX IX_Customer_LastName
-ON dbo.Customer (LastName);
+CREATE NONCLUSTERED INDEX IX_Order_CustomerId_OrderDate
+ON dbo.[Order] (CustomerId, OrderDate)
+INCLUDE (TotalAmount);
 ```
+Line-by-line:
+1. Nonclustered index keys support seek on customer/date predicates.
+2. Include column avoids extra key lookups for amount projections.
 
-## Good performance mindset
-- Index the columns used in `WHERE`, `JOIN`, and `ORDER BY`
-- Avoid unnecessary indexes on every column
-- Use `EXISTS` rather than `COUNT(*)` for existence checks
-- Check actual query plans before and after adding indexes
+Expected result: lower logical reads for common customer timeline queries.
 
-## Practice tasks
-1. Create an index on a frequently filtered column.
-2. Compare query times with and without an index.
-3. Learn when indexes help and when they hurt.
-4. Review execution plan impacts.
+## Common mistakes
+- Creating too many overlapping indexes.
+- Ignoring write overhead on heavy insert/update tables.
 
-## Learning tip
-Performance tuning is not about adding indexes everywhere. It is about understanding the workload and choosing the correct access path.
+## Performance workflow
+1. Baseline query stats (`SET STATISTICS IO, TIME ON`).
+2. Add/change one index.
+3. Re-test and compare plans/reads.
+
+## DSA connection
+Most relational indexes are tree-based; seek is `O(log n)` while scans are `O(n)`.
+
+## Exercises
+1. Design covering index for top-10 recent orders per customer.
+2. Compare heap vs clustered table read behavior.

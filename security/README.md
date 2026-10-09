@@ -1,51 +1,67 @@
-# Security
+# Security (Least Privilege + Data Protection)
 
-This folder covers database security practices and user-safe access patterns.
+## Overview
+This folder covers SQL Server security features: permissions, masking, encryption, row-level security, and auditing.
 
-## Core topics
-- permissions
-- roles and access control
-- stored procedure security patterns
-- input validation
-- avoiding unsafe SQL query construction
+## Folder SQL map
+| SQL file | Practice focus |
+|---|---|
+| `aaaaaa.sql` | aaaaaa |
+| `aaudit.sql` | aaudit |
+| `cek.sql` | cek |
+| `cmk.sql` | cmk |
+| `col_level_e.sql` | col level e |
+| `decrypt.sql` | decrypt |
+| `encrpyt_table.sql` | encrpyt table |
+| `encrypt.sql` | encrypt |
+| `func.sql` | func |
+| `grant.sql` | grant |
+| `intro.sql` | intro |
+| `mask.sql` | mask |
+| `predicted.sql` | predicted |
+| `rls_fun.sql` | rls fun |
+| `security.sql` | security |
+| `security_policy.sql` | security policy |
+| `seq.sql` | seq |
+| `ser.sql` | ser |
 
-## SQL Server security rules for this repo
-- Never generate `GRANT` statements to `public`
-- Use parameterized queries, never concatenate user input
-- Avoid dynamic SQL when possible
-- Protect data access through least privilege
+## Learning objectives
+- Apply least privilege.
+- Protect sensitive data at rest and in query output.
+- Enforce row-level policies by user context.
 
-## Why security matters
-A database can be correct, fast, and still unsafe if users can inject queries or access restricted records.
-
-## Example of a safer pattern
+## Example: secure read via procedure
 ```sql
-CREATE PROCEDURE dbo.usp_GetCustomerById
+CREATE PROCEDURE dbo.usp_GetCustomerContact
     @CustomerId INT
 AS
 BEGIN
     SET NOCOUNT ON;
 
     SELECT
-        CustomerId,
-        FirstName,
-        LastName
-    FROM dbo.Customer
-    WHERE CustomerId = @CustomerId;
+        c.CustomerId,
+        c.FirstName,
+        c.LastName,
+        c.EmailAddress
+    FROM dbo.Customer AS c
+    WHERE c.CustomerId = @CustomerId;
 END;
 ```
+Line-by-line:
+1. Caller passes parameterized key (safe input handling).
+2. Procedure exposes only required columns.
+3. No direct table grant needed for app role if execute rights are used.
 
-## Practice tasks
-1. Compare direct table access and stored procedure access.
-2. Review examples of parameterized queries.
-3. Identify security issues in unsafe SQL patterns.
-4. Understand the idea of least privilege.
+Expected result: controlled row/column exposure.
 
-## Learning mindset
-Never treat security as an afterthought. Good database design includes:
-- controlled access
-- validation
-- restricted permissions
-- safe coding patterns
+## Security reminders
+- Never `GRANT` to `public`.
+- Avoid dynamic SQL unless strictly necessary.
+- Use `TRY...CATCH` around sensitive write operations.
 
-This folder is essential for building professional database systems.
+## DSA connection
+Security policies on predicates resemble filtered graph traversal: user context determines reachable nodes (rows).
+
+## Exercises
+1. Implement dynamic data masking for email.
+2. Create row-level security predicate function and policy.

@@ -1,34 +1,50 @@
-# Node / SQL Integration
+# Node + SQL Server Concepts (Graph-style Queries Included)
 
-This folder is for connecting SQL Server to JavaScript or Node-based tooling.
+## Overview
+This folder appears to practice SQL graph/node-style scripts and relationship matching patterns.
 
-## Why this matters
-SQL is often used together with application code. Node.js is a common way to build services that query, insert, and transform database data.
+## Folder SQL map
+| SQL file | Practice focus |
+|---|---|
+| `SQLQuery2.sql` | SQLQuery2 |
+| `SQLQuery3.sql` | SQLQuery3 |
+| `friend.sql` | friend |
+| `insert.sql` | insert |
+| `match.sql` | match |
+| `match__.sql` | match   |
+| `match_diff.sql` | match diff |
+| `match_re.sql` | match re |
+| `pord.sql` | pord |
+| `shortPath.sql` | shortPath |
+| `who_connect_with_whom.sql` | who connect with whom |
 
-## Common tasks here
-- create database connections
-- execute queries from Node.js
-- read result sets in application code
-- build simple data APIs or scripts
-
-## Example idea
-```javascript
-const sql = require('mssql');
-
-async function getCustomers() {
-  const pool = await sql.connect('Server=localhost;Database=DemoDb;Trusted_Connection=True;');
-  const result = await pool.request().query('SELECT CustomerId, FirstName FROM dbo.Customer;');
-  console.log(result.recordset);
-}
+## Self-contained graph-flavored query idea
+```sql
+SELECT
+    p1.PersonName AS SourcePerson,
+    p2.PersonName AS TargetPerson,
+    f.RelationshipType
+FROM dbo.Person AS p1
+INNER JOIN dbo.Friendship AS f
+    ON f.SourcePersonId = p1.PersonId
+INNER JOIN dbo.Person AS p2
+    ON p2.PersonId = f.TargetPersonId;
 ```
+Line-by-line:
+1. `p1` and `p2` represent source/target nodes.
+2. Bridge table (`Friendship`) represents graph edges.
+3. Joins materialize readable path endpoints.
 
-## Data engineering principle
-The database should be the source of truth. Application code should request, validate, and present data, not hide logic in unsafe or inconsistent ways.
+Expected result: directed relationship rows.
 
-## Practice tasks
-1. Connect to SQL Server from Node.
-2. Fetch rows and print them in a console.
-3. Insert a new record using parameterized input.
-4. Build a small script that reads from a table.
+## Use cases
+- Recommendation edges
+- "Who is connected to whom" queries
+- Shortest path experiments
 
-This folder expands your SQL learning into real-world application integration.
+## DSA connection
+This maps directly to graph traversal concepts (nodes, edges, path exploration).
+
+## Exercises
+1. Return second-degree connections (friend-of-friend).
+2. Prevent duplicate undirected edge insertion.

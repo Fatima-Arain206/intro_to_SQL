@@ -1,28 +1,29 @@
-# Labs
+# SQL Labs (Practice-first Learning)
 
-This folder acts like a practice area for SQL exercises and hands-on experiments.
+## Overview
+Use this folder for guided, repeatable SQL experiments.
 
-## Purpose
-Labs are where you test your understanding without worrying about perfect production code. They help you do the following:
+## Folder file map
+_No local SQL files detected._
 
-- apply a concept immediately
-- check syntax and logic
-- build confidence with repeated practice
-- debug incorrect results
+## Practice workflow
+1. Read topic README (e.g., joins, CTE, security).
+2. Run one lab script.
+3. Predict output before execution.
+4. Change one clause and compare result.
+5. Write learning notes: correctness, performance, security.
 
-## How to use labs
-1. Read the concept theory.
-2. Open a lab file.
-3. Run the query in SQL Server.
-4. Change one part of the query.
-5. Observe how the result changes.
+## Lab checklist
+- [ ] Explicit columns in every `SELECT`
+- [ ] `dbo.` schema used
+- [ ] ANSI joins only
+- [ ] Edge-case test (`NULL`, duplicates, empty set)
+- [ ] Performance thought: index or rewrite?
 
-## Study tips
-- Keep notes for every lab.
-- Write a short summary of what the query is doing.
-- Try to rewrite the same logic in a different form.
+## Debugging prompts
+- Which line controls row count?
+- Which predicate is non-SARGable?
+- Could this fail with nulls or timezone data?
 
-## Mindset
-The goal is not just to copy code. The goal is to understand why the code behaves the way it does.
-
-This folder is your practice ground for building real SQL skill.
+## DSA connection
+Labs help build algorithmic thinking: decompose query steps, estimate cost, and validate invariants.

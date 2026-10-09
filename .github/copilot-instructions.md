@@ -1,29 +1,31 @@
-# Project Guidelines for Copilot
+# Project Guidelines for Copilot (Expanded)
 
-## Database Development Standards
+This repository teaches SQL Server/T-SQL from beginner to advanced level. Keep generated code educational, safe, and production-aware.
 
-This project uses SQL Server 2025 with the following conventions:
+## Core conventions
+- Tables: PascalCase singular (`Customer`, `OrderDetail`)
+- Columns: PascalCase (`FirstName`, `OrderDate`)
+- Procedures: `usp_ActionEntity`
+- Views: `vw_EntityName`
+- Indexes: `IX_TableName_ColumnName`
 
-### Naming Conventions
-- Tables: PascalCase, singular (Customer, OrderDetail)
-- Columns: PascalCase (FirstName, OrderDate)
-- Stored procedures: usp_ActionEntity (usp_GetCustomerOrders)
-- Views: vw_EntityName (vw_ActiveCustomers)
-- Indexes: IX_TableName_ColumnName
+## T-SQL quality rules
+- Use explicit columns (no `SELECT *`).
+- Use schema-qualified names (`dbo.TableName`).
+- Use ANSI joins only.
+- Add `SET NOCOUNT ON` in procedures.
+- Use `TRY...CATCH` for data modifications.
 
-### T-SQL Style
-- Use explicit column lists in SELECT statements (avoid SELECT *)
-- Always include schema prefix (dbo.TableName)
-- Use ANSI JOIN syntax, not comma-separated tables
-- Include error handling in all stored procedures
-- Use TRY...CATCH blocks for data modification operations
+## Security rules
+- Never grant to `public`.
+- Use parameterized inputs.
+- Avoid dynamic SQL unless required and sanitized.
 
-### Security Requirements
-- Never generate GRANT statements to public
-- Use parameterized queries, never concatenate user input
-- Avoid dynamic SQL when possible
-
-### Performance Guidelines
-- Suggest appropriate indexes when creating tables
-- Prefer SET NOCOUNT ON in stored procedures
-- Use EXISTS instead of COUNT for existence checks
+## Teaching style requirement
+When generating docs/examples:
+1. Give a simple overview.
+2. Show runnable SQL.
+3. Explain key lines.
+4. Describe expected result.
+5. Add common mistakes + debugging hint.
+6. Mention performance/security impact.

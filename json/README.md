@@ -1,40 +1,55 @@
 # JSON in SQL Server
 
-This folder covers working with JSON data inside SQL Server tables and queries.
+## Overview
+This folder practices reading, shaping, and updating JSON using T-SQL.
 
-## Why JSON matters
-Many systems send and receive JSON from APIs, front-end apps, and services. SQL Server can store and query JSON efficiently.
-
-## Core topics
-- JSON columns
-- `OPENJSON`
-- `JSON_VALUE`
-- `JSON_MODIFY`
-- parsing semi-structured data
+## Folder SQL map
+| SQL file | Practice focus |
+|---|---|
+| `SQLQuery1.sql` | SQLQuery1 |
+| `SQLQuery8.sql` | SQLQuery8 |
+| `arrayAgg.sql` | arrayAgg |
+| `configuration.sql` | configuration |
+| `croos_apply_with_jso.sql` | croos apply with jso |
+| `declareJson.sql` | declareJson |
+| `join.sql` | join |
+| `json_array.sql` | json array |
+| `json_array2.sql` | json array2 |
+| `json_object.sql` | json object |
+| `json_qury.sql` | json qury |
+| `nesnted_jsonpath.sql` | nesnted jsonpath |
+| `open_json.sql` | open json |
+| `scaler_val.sql` | scaler val |
+| `ver.sql` | ver |
 
 ## Example
 ```sql
 SELECT
-    JSON_VALUE(CustomerData, '$.name') AS CustomerName,
-    JSON_VALUE(CustomerData, '$.city') AS City
-FROM dbo.CustomerProfile;
+    p.ProductId,
+    JSON_VALUE(p.AttributesJson, '$.category') AS Category,
+    JSON_VALUE(p.AttributesJson, '$.color') AS Color
+FROM dbo.Product AS p
+WHERE JSON_VALUE(p.AttributesJson, '$.isActive') = 'true';
 ```
+Line-by-line:
+1. `JSON_VALUE` extracts scalar properties.
+2. Explicit aliases produce readable output.
+3. Predicate filters active products from JSON payload.
 
-## Learning goals
-- Understand when JSON is a good fit
-- Learn how to convert JSON to relational rows
-- Learn how to update JSON values without rewriting the entire document
+Expected result: products with parsed category/color for active items.
 
-## Best practices
-- Use JSON when data is semi-structured
-- Use relational tables for structured, strongly typed data
-- Validate JSON before storing large payloads
-- Keep queries readable and explicit
+## Important topics
+- `OPENJSON` for arrays/object shredding
+- `JSON_QUERY` for object/array fragments
+- `JSON_MODIFY` for updates
 
-## Practice tasks
-1. Parse JSON arrays with `OPENJSON`.
-2. Extract a scalar value with `JSON_VALUE`.
-3. Update a key using `JSON_MODIFY`.
-4. Compare JSON storage to a normalized table design.
+## Pitfalls
+- Invalid JSON text (use `ISJSON`).
+- Function predicates can be non-SARGable at scale.
 
-This folder teaches how SQL Server bridges the gap between relational and document-style data.
+## DSA connection
+JSON path navigation is similar to tree traversal over nested nodes.
+
+## Exercises
+1. Parse an order-items array with `OPENJSON` + `CROSS APPLY`.
+2. Add persisted computed column for a frequently filtered JSON key.

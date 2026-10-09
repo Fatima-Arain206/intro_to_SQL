@@ -1,36 +1,55 @@
-# 📚 Intro to SQL - PDF Learning Modules
+# Intro to SQL (SQL Server / T-SQL) Learning Map
 
-Welcome to the **PDF Resources** section of the `intro_to_SQL` repository! Here you will find a curated, step-by-step collection of comprehensive notes, cheat sheets, and practical guides designed to take you from SQL fundamentals to advanced database optimization and AI integration.
+Welcome! This repository is organized as topic-wise practice folders so you can move from beginner SQL to advanced SQL Server patterns.
 
----
+## How to Use This Repo
+1. Start with `PDFs/` for theory.
+2. Move to folder READMEs for hands-on steps.
+3. Run `.sql` files in a safe practice database.
+4. For each topic: predict output -> run query -> explain result.
 
-## 🗂️ Module Overview
+```mermaid
+flowchart LR
+A[Theory PDFs] --> B[Topic README]
+B --> C[Run SQL Script]
+C --> D[Check Output]
+D --> E[Tune, Secure, Refactor]
+```
 
-| # | File Name | Description & Key Topics |
+## Topic Navigation
+| Topic | Folder | Start here |
 |---|---|---|
-| 01 | **[01_SQL_Introduction.pdf](01_SQL_Introduction.pdf)** | Database Basics, RDBMS Architecture, SQL vs NoSQL, Basic Concepts. |
-| 02 | **[02_Query_Data_SELECT.pdf](02_Query_Data_SELECT.pdf)** | `SELECT` statement syntax, Aliases, Column Operations, Basic Queries. |
-| 03 | **[03_Data_Definition_DDL.pdf](03_Data_Definition_DDL.pdf)** | Schema management: `CREATE`, `ALTER`, `DROP`, `TRUNCATE`, Constraints (PK, FK, Unique). |
-| 04 | **[04_Data_Manipulation_DML.pdf](04_Data_Manipulation_DML.pdf)** | Data management: `INSERT`, `UPDATE`, `DELETE`, Transactional control basics. |
-| 05 | **[05_Filtering_Data.pdf](05_Filtering_Data.pdf)** | Advanced filtering using `WHERE`, `LIKE`, `IN`, `BETWEEN`, `AND/OR/NOT`, handling `NULL`s. |
-| 06 | **[06_JOINS_and_SET.pdf](06_JOINS_and_SET.pdf)** | Relational Data Linking: `INNER`, `LEFT`, `RIGHT`, `FULL`, `CROSS JOIN`, plus `UNION`, `INTERSECT`. |
-| 07 | **[07_Row_Level_Functions.pdf](07_Row_Level_Functions.pdf)** | Scalar functions: String manipulation, Date/Time formatting, Math functions, `CASE WHEN`. |
-| 08 | **[08_Aggregation_Analytical_Functions.pdf](08_Aggregation_Analytical_Functions.pdf)** | Grouping with `GROUP BY` & `HAVING`, Window Functions (`ROW_NUMBER`, `RANK`, `LEAD/LAG`). |
-| 09 | **[09_Advanced_SQL_Techniques.pdf](09_Advanced_SQL_Techniques.pdf)** | Subqueries, CTEs (Common Table Expressions), Recursive Queries, Views & Indexes. |
-| 10 | **[10_Performance_Optimization.pdf](10_Performance_Optimization.pdf)** | Execution Plans, Index Tuning, Query Refactoring, Bottleneck Removal. |
-| -- | **[10_SQL_30_Performance_Tips.pdf](10_SQL_30_Performance_Tips.pdf)** | Quick-reference cheat sheet with 30 actionable tips for faster SQL queries. |
-| 11 | **[11_AI_and_SQL.pdf](11_AI_and_SQL.pdf)** | Integrating LLMs with Databases, Text-to-SQL workflows, AI-driven Query Optimization. |
-| 12 | **[12_SQL_Projects.pdf](12_SQL_Projects.pdf)** | End-to-end practical SQL implementation projects and problem sets. |
-| -- | **[12_SQL_Projects_Data_Analytics.pdf](12_SQL_Projects_Data_Analytics.pdf)** | Real-world Business Intelligence (BI) and Data Analytics case studies. |
-| -- | **[12_SQL_Projects_ETL.pdf](12_SQL_Projects_ETL.pdf)** | Building Data Pipelines, Data Transformation, and Staging workflows. |
+| Core table design | `TABLE/` | [TABLE/README.md](TABLE/README.md) |
+| Joins | `Joins/` | [Joins/README.md](Joins/README.md) |
+| CTEs | `cte/` | [cte/README.md](cte/README.md) |
+| Subqueries | `subquery/` | [subquery/README.md](subquery/README.md) |
+| Set operators | `sets/` | [sets/README.md](sets/README.md) |
+| String functions | `string_functions/` | [string_functions/README.md](string_functions/README.md) |
+| Window functions | `windows_function/` | [windows_function/README.md](windows_function/README.md) |
+| Procedures | `procedure/` | [procedure/README.md](procedure/README.md) |
+| Scalar/table functions | `scaler_function/` | [scaler_function/README.md](scaler_function/README.md) |
+| Views | `view/` | [view/README.md](view/README.md) |
+| Triggers | `trigger/` | [trigger/README.md](trigger/README.md) |
+| Indexes | `indexes/` | [indexes/README.md](indexes/README.md) |
+| JSON | `json/` | [json/README.md](json/README.md) |
+| Security | `security/` | [security/README.md](security/README.md) |
+| Fuzzy matching | `fuzzy_functions/` | [fuzzy_functions/README.md](fuzzy_functions/README.md) |
+| Pattern matching | `patern match/` | [patern match/README.md](patern%20match/README.md) |
+| Graph/Node patterns | `node/` | [node/README.md](node/README.md) |
+| Vector search concepts | `vectors/` | [vectors/README.md](vectors/README.md) |
+| Labs | `labs/` | [labs/README.md](labs/README.md) |
+| DSA for DB internals | `DSA/` | [DSA/README.md](DSA/README.md) |
+| PDF learning track | `PDFs/` | [PDFs/README.md](PDFs/README.md) |
 
----
+## T-SQL Conventions Used Across This Repo
+- Explicit column list in `SELECT` statements
+- `dbo.` schema qualification
+- ANSI joins (`INNER JOIN`, `LEFT JOIN`)
+- Parameterization over string concatenation
+- `TRY...CATCH` for data modifications
 
-## 💻 How to Use These Guides
-
-1. **Sequential Learning:** If you are new to SQL, start from `01_SQL_Introduction.pdf` and follow the numerical order.
-2. **Project-Based Practice:** Jump straight to module `12` to test your skills on realistic Analytics and ETL scenarios.
-3. **Quick Optimization Reference:** Keep `10_SQL_30_Performance_Tips.pdf` handy when writing production-level queries.
-
----
-*Happy Querying! 🚀*
+## Quick self-check questions
+- Can I explain why this query returns each row?
+- Can I predict what happens for `NULL`, duplicates, and empty sets?
+- Which index would support this predicate/order?
+- Is this query safe and maintainable in production?

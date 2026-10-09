@@ -1,5 +1,20 @@
 # 🌳 DSA Learning Hub: Trees, B-Tree, and B+ Tree
 
+## Quick Navigation for SQL Learners
+
+If you're learning SQL performance, start with these links:
+- [Indexes guide](../indexes/README.md)
+- [Joins guide](../Joins/README.md)
+- [Window functions](../windows_function/README.md)
+- [Vectors and modern retrieval](../vectors/README.md)
+
+```mermaid
+flowchart TD
+A[DSA Concept] --> B[Database Structure]
+B --> C[Execution Plan Behavior]
+C --> D[Query Optimization Choice]
+```
+
 Hey Fatima, let’s make this folder actually useful and deep, not just a basic reminder.
 
 This folder is not just about DSA in general — it is specifically about understanding the structures behind database indexing, search performance, and query speed.

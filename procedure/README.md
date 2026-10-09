@@ -1,21 +1,25 @@
-# Stored Procedures
+# Stored Procedures (Reusable Business Logic)
 
-This folder focuses on reusable SQL logic encapsulated in procedures.
+## Overview
+Procedures encapsulate validated, parameterized T-SQL for application use.
 
-## What a stored procedure is
-A stored procedure is a named block of T-SQL that can accept input parameters, execute logic, and return result sets.
+## Folder SQL map
+| SQL file | Practice focus |
+|---|---|
+| `Procedure_output.sql` | Procedure output |
+| `Procedure_para.sql` | Procedure para |
+| `SQLQuery4.sql` | SQLQuery4 |
+| `SQLQuery5.sql` | SQLQuery5 |
+| `check.sql` | check |
+| `error_handling.sql` | error handling |
+| `function_table.sql` | function table |
+| `outputprocedure.sql` | outputprocedure |
+| `procedure_error_handling.sql` | procedure error handling |
+| `procedure_first.sql` | procedure first |
+| `std.sql` | std |
+| `try_catch.sql` | try catch |
 
-## Why procedures are useful
-- centralize business logic
-- improve maintainability
-- reduce duplicate SQL over many applications
-- control permissions and access patterns
-- support transaction-safe operations
-
-## Naming convention in this repo
-- `usp_ActionEntity` such as `usp_GetCustomerOrders`
-
-## Example
+## Safe procedure template
 ```sql
 CREATE PROCEDURE dbo.usp_GetCustomerOrders
     @CustomerId INT
@@ -33,20 +37,29 @@ BEGIN
     END TRY
     BEGIN CATCH
         THROW;
-    END CATCH
+    END CATCH;
 END;
 ```
+Line-by-line:
+1. Procedure name follows `usp_ActionEntity` style.
+2. Input parameter avoids query-string concatenation risk.
+3. `SET NOCOUNT ON` reduces noisy rowcount messages.
+4. `TRY...CATCH` centralizes error handling.
+5. Explicit columns + schema-qualified table keep code stable.
 
-## Important SQL Server practices
-- Use `SET NOCOUNT ON`
-- Wrap data changes in `TRY...CATCH`
-- Use parameterized input
-- Return explicit results, not generic messages only
+Expected result: returns order rows for one customer safely.
 
-## Practice tasks
-1. Create a procedure to fetch one customer.
-2. Create a procedure to insert a new order with validation.
-3. Add `TRY...CATCH` and inspect error handling.
-4. Compare procedure logic with inline SQL.
+## Common mistakes
+- Dynamic SQL without sanitization.
+- Missing transaction scope for multi-step writes.
 
-This folder helps you move from writing one-off scripts to building reusable database logic.
+## Best practices
+- For writes, wrap `BEGIN TRAN` in `TRY` and rollback in `CATCH`.
+- Surface consistent error metadata/logging.
+
+## DSA connection
+Think of a procedure like a reusable function with controlled inputs/outputs and side effects.
+
+## Exercises
+1. Build `dbo.usp_InsertOrderHeader` with transaction + validation.
+2. Add optional date range parameters and test null-handling logic.

@@ -1,28 +1,34 @@
-# Trigger / Queries & Related SQL Notes
+# check.sql Folder Guide
 
-This folder contains additional SQL examples and notes for working with transformations, validations, and logic patterns.
+## Overview
+This folder contains validation-oriented SQL scripts and supporting objects.
 
-## Goal of this folder
-The files here are meant to help you practice how SQL handles:
-- table logic
-- conditional processing
-- validation rules
-- data correction and transformation
+## Folder SQL map
+| SQL file | Practice focus |
+|---|---|
+| `check.sql` | check |
+| `tables.sql` | tables |
+| `vw_ProductSalesAnalysis.sql` | vw ProductSalesAnalysis |
 
-## Typical learning flow
-1. Understand the business problem.
-2. Write the query or procedure.
-3. Check the result.
-4. Test edge cases.
-5. Review the logic for correctness and performance.
+## Suggested usage
+- Run table/view creation scripts first.
+- Execute check scripts to confirm expected shape/results.
+- Compare output after each modification.
 
-## Good habits
-- Prefer clear names and comments
-- Use explicit column names
-- Validate assumptions with sample data
-- Check for null handling and duplicate records
+## Example verification query
+```sql
+SELECT
+    ps.ProductId,
+    ps.TotalSalesAmount
+FROM dbo.vw_ProductSalesAnalysis AS ps
+WHERE ps.TotalSalesAmount > 0;
+```
+Line-by-line:
+1. Reads from analysis view only required columns.
+2. Filter removes empty/invalid totals.
 
-## SQL mindset
-Every SQL file is a story about a data problem. Your job is to read the story, understand the data flow, and then rewrite it in a cleaner, more efficient way.
+Expected result: positive-sales products with stable metrics.
 
-This folder is a practice lab for building SQL confidence.
+## Common mistakes
+- Running verification before base objects exist.
+- Ignoring datatype mismatches between source and view calculations.

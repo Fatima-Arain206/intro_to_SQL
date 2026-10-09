@@ -1,29 +1,31 @@
-# New SDK-style SQL project with Microsoft.Build.Sql
+# MyDatabaseProject (SQL Project Build + Deployment Guide)
+
+This subfolder is a SQL project (dacpac workflow) used to package database objects for repeatable deployment.
 
 ## Build
-
-To build the project, run the following command:
-
 ```bash
 dotnet build
 ```
 
-🎉 Congrats! You have successfully built the project and now have a `dacpac` to deploy anywhere.
+What this does:
+1. Validates project SQL definitions.
+2. Produces a `.dacpac` artifact.
 
-## Publish
-
-To publish the project, the SqlPackage CLI or the SQL Database Projects extension for VS Code is required. The following command will publish the project to a local SQL Server instance:
-
+## Publish (example)
 ```bash
 sqlpackage /Action:Publish /SourceFile:bin/Debug/MyDatabaseProject.dacpac /TargetServerName:localhost /TargetDatabaseName:MyDatabaseProject
 ```
 
-Learn more about authentication and other options for SqlPackage here: https://aka.ms/sqlpackage-ref
+Line-by-line:
+1. `/Action:Publish` compares source model with target DB.
+2. `/SourceFile` points to built dacpac.
+3. `/TargetServerName` and `/TargetDatabaseName` set destination.
 
-### Install SqlPackage CLI
+## Good practices
+- Keep seed scripts idempotent where possible.
+- Review publish drift report before production deploy.
+- Store secrets in secure pipeline variables, never in repo text.
 
-If you would like to use the command-line utility SqlPackage.exe for deploying the `dacpac`, you can obtain it as a dotnet tool.  The tool is available for Windows, macOS, and Linux.
-
-```bash
-dotnet tool install -g microsoft.sqlpackage
-```
+## Exercises
+1. Add a new table script and rebuild.
+2. Run publish to local DB and verify object creation.

@@ -1,33 +1,35 @@
-# Product Catalog API
+# Product Catalog API Data Guide
 
-This folder likely contains practical database and API examples built around a product catalog dataset.
+This folder contains API-facing SQL configuration/assets for a product catalog scenario.
 
-## Aim
-The goal is to connect SQL concepts to a realistic business domain where products, categories, pricing, and inventory are stored and queried.
+## Learning goals
+- Map API fields to relational columns.
+- Keep query contracts stable and explicit.
+- Add filters/sorts safely.
 
-## Core concepts likely used here
-- table design for products
-- catalog data relationships
-- joins between product and category tables
-- filtering by category, price, or stock
-- stored procedures for API-like data access
-
-## Example workflow
+## Typical API query pattern
 ```sql
 SELECT
     p.ProductId,
     p.ProductName,
-    c.CategoryName,
-    p.UnitPrice
+    p.UnitPrice,
+    p.IsActive,
+    c.CategoryName
 FROM dbo.Product AS p
 INNER JOIN dbo.Category AS c
-    ON p.CategoryId = c.CategoryId;
+    ON c.CategoryId = p.CategoryId
+WHERE p.IsActive = 1
+ORDER BY p.ProductName;
 ```
+Line-by-line:
+1. Explicit projection controls payload size.
+2. Join enriches product row with category label.
+3. Active filter hides retired products.
+4. Stable ordering improves deterministic paging.
 
-## Skills to practice
-1. Design a catalog schema.
-2. Write queries for products by category.
-3. Add filters for price and availability.
-4. Build API-friendly data access patterns.
+Expected result: active products sorted by name for API response.
 
-This folder is a bridge between pure SQL learning and real business application design.
+## API best practices
+- Parameterize user filters (`@CategoryId`, `@MinPrice`, ...).
+- Avoid `SELECT *` to prevent accidental response drift.
+- Ensure indexes support API filter/sort keys.

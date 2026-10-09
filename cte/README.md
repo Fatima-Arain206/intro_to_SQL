@@ -1,41 +1,67 @@
 # CTE (Common Table Expressions)
 
-This folder focuses on CTEs, which make queries easier to read and break into logical steps.
+## Overview
+CTEs help you break a complex query into readable, testable steps.
 
-## What a CTE is
-A CTE is a temporary named result set used inside a query. It helps you organize complex logic without creating a permanent table.
+## Learning objectives
+- Write single and multiple CTE chains.
+- Use recursive CTEs safely.
+- Compare CTEs with temp tables and subqueries.
 
-## Why CTEs are useful
-- simplify multi-step queries
-- improve readability
-- support recursive queries
-- make debugging easier
+## Folder SQL map
+| SQL file | Practice focus |
+|---|---|
+| `CURRENT.sql` | CURRENT |
+| `DATEsEQ.sql` | DATEsEQ |
+| `SQLQuery2.sql` | SQLQuery2 |
+| `SQLQuery3.sql` | SQLQuery3 |
+| `SQLQuery4.sql` | SQLQuery4 |
+| `SQLQuery5.sql` | SQLQuery5 |
+| `UPDATECTE.sql` | UPDATECTE |
+| `cte1.sql` | cte1 |
+| `multipleCte_with1.sql` | multipleCte with1 |
+| `non_rec.sql` | non rec |
+| `recvursive.sql` | recvursive |
+| `series.sql` | series |
 
-## Example
+## Self-contained example
 ```sql
-WITH ActiveCustomers AS (
+WITH MonthlySales AS (
     SELECT
-        CustomerId,
-        FirstName,
-        LastName
-    FROM dbo.Customer
-    WHERE IsActive = 1
+        o.CustomerId,
+        DATEFROMPARTS(YEAR(o.OrderDate), MONTH(o.OrderDate), 1) AS SalesMonth,
+        SUM(o.TotalAmount) AS MonthlyAmount
+    FROM dbo.[Order] AS o
+    GROUP BY
+        o.CustomerId,
+        DATEFROMPARTS(YEAR(o.OrderDate), MONTH(o.OrderDate), 1)
 )
 SELECT
-    *
-FROM ActiveCustomers;
+    ms.CustomerId,
+    ms.SalesMonth,
+    ms.MonthlyAmount
+FROM MonthlySales AS ms
+WHERE ms.MonthlyAmount > 10000;
 ```
+Line-by-line:
+1. `MonthlySales` CTE computes reusable monthly aggregation.
+2. `DATEFROMPARTS` normalizes to month start.
+3. `SUM` + `GROUP BY` builds per-customer monthly totals.
+4. Outer query filters high-value months.
 
-## Advanced use case
-CTEs are especially helpful when you write:
-- aggregated steps followed by final filtering
-- recursive hierarchical queries
-- query decomposition for readability
+Expected result: rows where monthly spend exceeds threshold.
 
-## Practice tasks
-1. Create a CTE from a filtered result set.
-2. Join a CTE to another table.
-3. Write a recursive CTE for hierarchical data.
-4. Compare a CTE to a subquery.
+## Edge cases
+- Recursive CTE infinite loop without stop condition.
+- Non-deterministic ordering assumptions in recursion.
 
-This folder is important because readable SQL is maintainable SQL.
+## Performance notes
+- CTE is a query expression, not guaranteed materialization.
+- For reused heavy intermediate data, compare temp table strategy.
+
+## DSA connection
+Recursive CTEs model tree/graph traversal (DFS/BFS thinking).
+
+## Exercises
+1. Build date series CTE for last 30 days.
+2. Traverse employee-manager hierarchy recursively.

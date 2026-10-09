@@ -1,39 +1,49 @@
-# Scalar Functions
+# Scalar & Table Functions
 
-This folder covers single-row functions that transform values for each row in a query.
+## Overview
+This folder includes scalar UDF patterns, inline table-valued functions, and `CROSS APPLY` usage.
 
-## Use cases
-- string cleaning
-- date calculations
-- number formatting
-- conditional logic
-- business rules
+## Folder SQL map
+| SQL file | Practice focus |
+|---|---|
+| `SQLQuery1.sql` | SQLQuery1 |
+| `bussines_logic.sql` | bussines logic |
+| `cross_apply.sql` | cross apply |
+| `inline_table.sql` | inline table |
+| `mulit_statment_function.sql` | mulit statment function |
+| `multi_statment.sql` | multi statment |
+| `tenure_scaler.sql` | tenure scaler |
 
-## Typical functions
-- `CAST` / `CONVERT`
-- `ABS`, `ROUND`
-- `DATEADD`, `DATEDIFF`
-- `CASE WHEN`
-
-## Example
+## Example (inline TVF preferred for performance)
 ```sql
-SELECT
-    CustomerId,
-    FirstName,
-    CASE
-        WHEN IsActive = 1 THEN 'Active'
-        ELSE 'Inactive'
-    END AS Status
-FROM dbo.Customer;
+CREATE FUNCTION dbo.ufn_CustomerOrdersByYear (@OrderYear INT)
+RETURNS TABLE
+AS
+RETURN
+(
+    SELECT
+        o.OrderId,
+        o.CustomerId,
+        o.OrderDate,
+        o.TotalAmount
+    FROM dbo.[Order] AS o
+    WHERE YEAR(o.OrderDate) = @OrderYear
+);
 ```
+Line-by-line:
+1. Function parameter defines reusable filter criterion.
+2. `RETURNS TABLE` inline form usually optimizes better than multi-statement UDF.
+3. Explicit projection supports predictable contracts.
 
-## Learning goal
-Understand that scalar functions work row by row and are different from aggregate functions, which summarize many rows together.
+Expected result: function behaves like parameterized view for one year.
 
-## Practice tasks
-1. Convert dates to a readable format.
-2. Use `CASE` for status flags.
-3. Compare scalar and aggregate behavior.
-4. Explain when to use functions in the `SELECT` list vs computed columns.
+## Pitfalls
+- Scalar UDF row-by-row overhead on big scans.
+- Non-SARGable filters (`YEAR(column)`); consider persisted computed column/filter rewrite.
 
-This folder builds the skill of transforming raw values into business-friendly data.
+## DSA connection
+`CROSS APPLY` resembles map/transform over each outer row.
+
+## Exercises
+1. Convert a scalar UDF to inline TVF and compare execution plans.
+2. Use `CROSS APPLY` to parse delimited tags per product.
